@@ -1,0 +1,38 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e50867e50a67a014d841bb25ca743dfb, type: 3}
+  m_Name: StearingAxiasInfo
+  m_EditorClassIdentifier: 
+  XAxis: 0
+  centeredXAxis: 0
+  XAxisTitle: 
+  XAxisLabels: []
+  XAxisEdgeTextMargin: 0
+  XAxisTextSize: 0
+  YAxisTitle: Stearing
+  YAxisTitleMargin: 0.0025
+  YAxisTitleLeftAligment: 1
+  YAxisTitleSize: 0.02
+  YAxisLabels:
+  - -1
+  - 0
+  - 1
+  YAxisLabelMargin: -0.01
+  YAxisLabelLeftAligment: 0
+  YAxisLabelSize: 0.01
+  YAxisLabelDividingLines: 1
+  YAxisLabelDividingLinesLength: -0.0075
+  YAxisLabelDividingLinesWidth: 0.00075
+  YAxisInterLabelDividingLines: 1
+  YAxisInterLabelDividingLinesCount: 10
+  YAxisInterLabelDividingLinesLength: -0.005
+  YAxisInterLabelDividingLinesWidth: 0.0005
