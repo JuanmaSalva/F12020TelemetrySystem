@@ -6,7 +6,7 @@ using UnityEngine;
 using F1TS;
 
 
-public class CurrentTrack : MonoBehaviour
+public class CurrentTrack : TelemetryListener
 {
     [DllImport("F12020Telemetry")]
     private static extern sbyte F1TS_trackId();
@@ -18,10 +18,14 @@ public class CurrentTrack : MonoBehaviour
     sbyte currentTrackId = 0;
     string trackName;
 
-
-    void Update()
+    private void Start()
     {
+        EventManager.instance.AddListener(this);
+    }
 
+    public override void OnNewTrack(short length, sbyte trackId)
+    {
+        currentTrackText.text = GetTrackName(trackId);
     }
 
     string GetTrackName(sbyte trackName)
@@ -83,7 +87,7 @@ public class CurrentTrack : MonoBehaviour
             case (26):
                 return "Zondvoort";
             default:
-                return "";
+                return "N/A";
         }
     }
 }

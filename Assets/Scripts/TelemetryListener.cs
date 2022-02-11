@@ -11,7 +11,7 @@ public class TelemetryListener : MonoBehaviour
 
     public virtual void OnFastestLap(float time) { }
 
-    public virtual void OnNewTrack(short length, int trackId) { }
+    public virtual void OnNewTrack(short length, sbyte trackId) { }
 
 
 }

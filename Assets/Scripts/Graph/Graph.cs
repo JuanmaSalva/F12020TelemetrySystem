@@ -151,6 +151,7 @@ namespace F1TS
         private float currentLapDistance;
         private float maxDistance = 0;
         private short trackLength;
+        private sbyte trackId = -1;
         private byte playerCarId;
 
         private void InitDynamicPlotGraphs()
@@ -191,10 +192,23 @@ namespace F1TS
         public override void OnFastestLap(float time)
         {
             Debug.Log("NEW FASTEST LAP, dale carla");
+
+            List<UIVertex> v = new List<UIVertex>();
+            List< Vector3Int > t = new List<Vector3Int>();
+            foreach(DynamicPlotGraph dg in dynamicPlotGraphList)
+            {
+                v.AddRange(dg.GetShapeRendererVertecies());
+                t.AddRange(dg.GetShapeRendererTriangles());
+            }
+
+            LapGraphData lapGraphData = new LapGraphData(trackId, time, v, t);
+            print("Objeto creado, listo para guardar");
         }
 
-        public override void OnNewTrack(short length, int trackId)
+
+        public override void OnNewTrack(short length, sbyte trackId)
         {
+            this.trackId = trackId;
             trackLength = length;
             foreach (DynamicPlotGraph dg in dynamicPlotGraphList)
                 dg.ChangeTrackLength(length);

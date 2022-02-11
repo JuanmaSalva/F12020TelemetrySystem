@@ -33,6 +33,7 @@ namespace Graph
             UpdateGeometry();
         }
 
+
         public void Clear()
         {
             vertexs.Clear();
@@ -135,7 +136,7 @@ namespace Graph
             return new Vector3(pos.x * rect.width, pos.y * rect.height);
         }
 
-        public List<UIVertex> GetVertexs()
+        public List<UIVertex> GetVertecies()
         {
             return vertexs;
         }

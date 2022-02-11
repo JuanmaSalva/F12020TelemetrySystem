@@ -19,7 +19,7 @@ public class EventManager : MonoBehaviour
     [DllImport("F12020Telemetry")]
     private static extern short F1TS_trackLength();
     [DllImport("F12020Telemetry")]
-    private static extern ushort F1TS_sector1(byte carId);
+    private static extern ushort F1TS_sector2(byte carId);
     [DllImport("F12020Telemetry")]
     private static extern float F1TS_bestLapTime(byte id);
     [DllImport("F12020Telemetry")]
@@ -29,7 +29,7 @@ public class EventManager : MonoBehaviour
     private byte currentPlayerCarIndex = 0;
     private short currentLap = -10; //invalid number
     private sbyte currentTrackId = -1; //invalid number
-
+    private float bestLapTime = float.MaxValue;
 
     private List<TelemetryListener> listeners;
 
@@ -61,21 +61,23 @@ public class EventManager : MonoBehaviour
 
         if (CheckNewLap())
         {
+            if (CheckFastestLap())
+            {
+                foreach (TelemetryListener tl in listeners)
+                    tl.OnFastestLap(F1TS_bestLapTime(currentPlayerCarIndex));
+            }
+
             foreach (TelemetryListener tl in listeners)
                 tl.OnNewLap(currentLap);
         }
 
-        if (CheckFastestLap())
-        {
-            foreach (TelemetryListener tl in listeners)
-                tl.OnFastestLap(F1TS_bestLapTime(currentPlayerCarIndex));
-        }
 
         if (CheckNewTrack())
         {
             foreach (TelemetryListener tl in listeners)
                 tl.OnNewTrack(F1TS_trackLength(), currentTrackId);
         }
+
     }
 
     bool CheckNewPlayerCarIndex()
@@ -92,6 +94,7 @@ public class EventManager : MonoBehaviour
     {
         if(F1TS_currentLapNum(currentPlayerCarIndex) != currentLap)
         {
+            print("New lap");
             currentLap = F1TS_currentLapNum(currentPlayerCarIndex);
             return true;
         }
@@ -100,14 +103,10 @@ public class EventManager : MonoBehaviour
 
     bool CheckFastestLap()
     {
-        if(F1TS_sector1(currentPlayerCarIndex) > 0)
+        if(F1TS_lastTimeLap(currentPlayerCarIndex) < bestLapTime && F1TS_lastTimeLap(currentPlayerCarIndex) != 0)
         {
-            if(F1TS_lastTimeLap(currentPlayerCarIndex) == F1TS_bestLapTime(currentPlayerCarIndex) && 
-                F1TS_bestLapTime(currentPlayerCarIndex) != 0)
-            {
-                return true;
-            }
-            return false;
+            bestLapTime = F1TS_lastTimeLap(currentPlayerCarIndex);
+            return true;
         }
         return false;
     }

@@ -80,9 +80,19 @@ namespace F1TS
 
         public void NewLapStarted()
         {
-            staticPlotGraph.PlotGraph(shapeRenderer.GetVertexs(), shapeRenderer.GetTriangles());
+            staticPlotGraph.PlotGraph(shapeRenderer.GetVertecies(), shapeRenderer.GetTriangles());
             shapeRenderer.Clear();
             lines.Clear();
+        }
+
+        public List<UIVertex> GetShapeRendererVertecies()
+        {
+            return shapeRenderer.GetVertecies();
+        }
+
+        public List<Vector3Int> GetShapeRendererTriangles()
+        {
+            return shapeRenderer.GetTriangles();
         }
 
         public void ChangeTrackLength(short length)
