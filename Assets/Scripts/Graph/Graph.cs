@@ -198,10 +198,12 @@ namespace F1TS
 
             List<UIVertex> v = new List<UIVertex>();
             List<Vector3Int> t = new List<Vector3Int>();
+            int initialTris = 0;
             foreach (DynamicPlotGraph dg in dynamicPlotGraphList)
             {
                 v.AddRange(dg.GetShapeRendererVertecies());
-                t.AddRange(dg.GetShapeRendererTriangles());
+                t.AddRange(dg.GetShapeRendererTrianglesOffset(initialTris));
+                initialTris = v.Count;
             }
 
             LapGraphData lapGraphData = new LapGraphData(trackId, time, v, t);
@@ -228,7 +230,6 @@ namespace F1TS
                 Debug.Log("Vuelta cargada");
 
             staticBestLapGraph.PlotGraph(lapGraphData.GetVertecies(), lapGraphData.GetTriangles(), Manager.instance.colorPalette.GraphBestLap);
-
         }
     }
 }
