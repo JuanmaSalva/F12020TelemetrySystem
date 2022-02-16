@@ -80,7 +80,7 @@ namespace F1TS
 
         public void NewLapStarted()
         {
-            staticPlotGraph.PlotGraph(shapeRenderer.GetVertecies(), shapeRenderer.GetTriangles());
+            staticPlotGraph.PlotGraph(shapeRenderer.GetVertecies(), shapeRenderer.GetTriangles(), Manager.instance.colorPalette.GraphLastLap);
             shapeRenderer.Clear();
             lines.Clear();
         }
@@ -95,8 +95,19 @@ namespace F1TS
             return shapeRenderer.GetTriangles();
         }
 
+        public List<Vector3Int> GetShapeRendererTrianglesOffset(int offset)
+        {
+            List<Vector3Int> t = new List<Vector3Int>();
+            foreach(Vector3Int tri in shapeRenderer.GetTriangles())
+            {
+                t.Add(new Vector3Int(tri.x+offset, tri.y+offset, tri.z+offset));
+            }
+            return t;
+        }
+
         public void ChangeTrackLength(short length)
         {
+            staticPlotGraph.graphInfo.MaxXValue = length;
             graphInfo.MaxXValue = length;
         }
     }

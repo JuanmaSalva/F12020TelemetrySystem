@@ -23,12 +23,12 @@ namespace F1TS
         }
 
 
-        public void PlotGraph(List<UIVertex> vertexs, List<Vector3Int> triangles)
+        public void PlotGraph(List<UIVertex> vertexs, List<Vector3Int> triangles, Color color)
         {
             for(int i = 0; i < vertexs.Count; i++)
             {
                 UIVertex v = vertexs[i];
-                v.color = Manager.instance.colorPalette.GraphLastLap;
+                v.color = color;
                 v.position.z = 1;
                 vertexs[i] = v;
             }
