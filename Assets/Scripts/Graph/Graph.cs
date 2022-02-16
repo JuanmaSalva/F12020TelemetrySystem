@@ -4,6 +4,7 @@ using UnityEngine;
 using Graph.Structs;
 using Sirenix.OdinInspector;
 using System.Runtime.InteropServices;
+using System.Threading;
 
 namespace F1TS
 {
@@ -208,7 +209,15 @@ namespace F1TS
 
             LapGraphData lapGraphData = new LapGraphData(trackId, time, v, t);
             print("Objeto creado, listo para guardar");
+            Thread thread = new Thread(SaveAndShowFastestLap);
+            thread.Start(lapGraphData);
+        }
+
+        private void SaveAndShowFastestLap(object lapGraphData)
+        {
+            LapGraphData aux = lapGraphData as LapGraphData;
             SaveSystem.SaveObject("SavedLapTrack" + trackId.ToString() + ".track", lapGraphData);
+            staticBestLapGraph.PlotGraph(aux.GetVertecies(), aux.GetTriangles(), Manager.instance.colorPalette.GraphBestLap);
         }
 
 

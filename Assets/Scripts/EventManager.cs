@@ -28,7 +28,6 @@ public class EventManager : MonoBehaviour
 
     private byte currentPlayerCarIndex = 0;
     private short currentLap = -10; //invalid number
-    private short lasLapWithin3Sector = -10;
     private sbyte currentTrackId = -1; //invalid number
     private short currentTrackLength = 0;
     private float bestLapTime = float.MaxValue;
@@ -116,7 +115,7 @@ public class EventManager : MonoBehaviour
 
     bool CheckFastestLap()
     {
-        if(F1TS_lastTimeLap(currentPlayerCarIndex) < bestLapTime && F1TS_lastTimeLap(currentPlayerCarIndex) != 0)
+        if(F1TS_lastTimeLap(currentPlayerCarIndex) < bestLapTime && F1TS_lastTimeLap(currentPlayerCarIndex) >= 30) //30 = min seconds for a timed lap
         {
             bestLapTime = F1TS_lastTimeLap(currentPlayerCarIndex);
             return true;

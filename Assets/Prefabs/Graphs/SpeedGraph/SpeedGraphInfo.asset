@@ -16,7 +16,7 @@ MonoBehaviour:
   MinYValue: 0
   MaxYValue: 400
   MinXValue: 0
-  MaxXValue: 63
+  MaxXValue: 1000
   LineWidth: 0.001
   InitialYPos: 0.8
   FinalYPos: 0.99

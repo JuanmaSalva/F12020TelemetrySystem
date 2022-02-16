@@ -43,18 +43,22 @@ public class Manager : MonoBehaviour
 
         print("Hemos inicializado el socket");
 
+#if UNITY_EDITOR
         EditorApplication.playModeStateChanged += HandleOnPlayModeChanged;
+#endif
         objectsDependantFromF1TS = new List<GameObject>();
         Application.targetFrameRate = 30;
         currentTrack = -1;
     }
-    
-    
+
+
+#if UNITY_EDITOR
     void HandleOnPlayModeChanged(PlayModeStateChange state)
     {
         if(state == PlayModeStateChange.ExitingPlayMode)
             CloseTelemetrySystem();
     }
+#endif
 
     void Update()
     {
