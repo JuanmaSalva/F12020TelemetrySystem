@@ -19,7 +19,7 @@ public class EventManager : MonoBehaviour
     [DllImport("F12020Telemetry")]
     private static extern short F1TS_trackLength();
     [DllImport("F12020Telemetry")]
-    private static extern ushort F1TS_sector2(byte carId);
+    private static extern ushort F1TS_sector(byte carId);
     [DllImport("F12020Telemetry")]
     private static extern float F1TS_bestLapTime(byte id);
     [DllImport("F12020Telemetry")]
@@ -28,8 +28,12 @@ public class EventManager : MonoBehaviour
 
     private byte currentPlayerCarIndex = 0;
     private short currentLap = -10; //invalid number
+    private short lasLapWithin3Sector = -10;
     private sbyte currentTrackId = -1; //invalid number
+    private short currentTrackLength = 0;
     private float bestLapTime = float.MaxValue;
+
+    private bool onLapStarted = false;
 
     private List<TelemetryListener> listeners;
 
@@ -59,6 +63,12 @@ public class EventManager : MonoBehaviour
                 tl.OnPlayerCarIdChanged(currentPlayerCarIndex);
         }
 
+        if (CheckNewTrack())
+        {
+            foreach (TelemetryListener tl in listeners)
+                tl.OnNewTrack(currentTrackLength, currentTrackId);
+        }
+
         if (CheckNewLap())
         {
             if (CheckFastestLap())
@@ -72,13 +82,10 @@ public class EventManager : MonoBehaviour
         }
 
 
-        if (CheckNewTrack())
-        {
-            foreach (TelemetryListener tl in listeners)
-                tl.OnNewTrack(F1TS_trackLength(), currentTrackId);
-        }
+
 
     }
+
 
     bool CheckNewPlayerCarIndex()
     {
@@ -92,11 +99,17 @@ public class EventManager : MonoBehaviour
 
     bool CheckNewLap()
     {
-        if(F1TS_currentLapNum(currentPlayerCarIndex) != currentLap)
+        if(!onLapStarted && F1TS_sector(currentPlayerCarIndex) == 0)
         {
             print("New lap");
+            print(F1TS_lastTimeLap(currentPlayerCarIndex));
             currentLap = F1TS_currentLapNum(currentPlayerCarIndex);
+            onLapStarted = true;
             return true;
+        }
+        else if (F1TS_sector(currentPlayerCarIndex) == 2)
+        {
+            onLapStarted = false;
         }
         return false;
     }
@@ -113,9 +126,10 @@ public class EventManager : MonoBehaviour
 
     bool CheckNewTrack()
     {
-        if(F1TS_trackId() != currentTrackId)
+        if(F1TS_trackId() != currentTrackId || currentTrackLength != F1TS_trackLength())
         {
             currentTrackId = F1TS_trackId();
+            currentTrackLength = F1TS_trackLength();
             return true;
         }
         return false;

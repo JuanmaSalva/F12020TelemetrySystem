@@ -6,7 +6,7 @@ using Sirenix.OdinInspector;
 using System.Runtime.InteropServices;
 
 namespace F1TS
-{    
+{
     public class Graph : TelemetryListener
     {
         [Title("Speed")]
@@ -47,7 +47,7 @@ namespace F1TS
 
         [TabGroup("Prefabs")]
         public GameObject graphObjPrefab;
-        [TabGroup("Prefabs")] 
+        [TabGroup("Prefabs")]
         public GameObject textObjPrefab;
 
 
@@ -59,13 +59,12 @@ namespace F1TS
         public Transform axisGraphsParent;
 
         private List<AxisPlotGraph> axisList;
-        private List<StaticPlotGraph> staticGraphList; //for saved data
         private List<DynamicPlotGraph> dynamicPlotGraphList;
-        
+        private StaticPlotGraph staticBestLapGraph; //for saved data
+
         void Start()
         {
             axisList = new List<AxisPlotGraph>();
-            staticGraphList = new List<StaticPlotGraph>();
             dynamicPlotGraphList = new List<DynamicPlotGraph>();
 
             InstantiateAxis(speedAxisInfo, speedGraphInfo, "SpeedAxis");
@@ -94,6 +93,8 @@ namespace F1TS
 
             InitDynamicPlotGraphs();
             EventManager.instance.AddListener(this);
+
+            staticBestLapGraph = InstantiateStaticPlotGraph(null, "BestLap");
         }
 
         private void InstantiateAxis(AxisInfo axisInfo, GraphInfo graphInfo, string name)
@@ -123,12 +124,14 @@ namespace F1TS
             dynamicPlotGraphList.Add(dynamicPlotGraph);
         }
 
-        private void InstantiateStaticPlotGraph(DynamicPlotGraph dynamicPlotGraph, string name)
+        private StaticPlotGraph InstantiateStaticPlotGraph(DynamicPlotGraph dynamicPlotGraph, string name)
         {
             GameObject obj = Instantiate(graphObjPrefab, staticGraphsParent);
             obj.name = name;
             StaticPlotGraph staticPlotGraph = obj.AddComponent<StaticPlotGraph>();
-            dynamicPlotGraph.SetStaticPlotGraph(staticPlotGraph);
+            if(dynamicPlotGraph != null) 
+                dynamicPlotGraph.SetStaticPlotGraph(staticPlotGraph);
+            return staticPlotGraph;
         }
 
 
@@ -158,7 +161,7 @@ namespace F1TS
         {
             playerCarId = F1TS_playerCarIndex();
             //TODO esto se deberia de mirar mas a menudo
-            foreach (DynamicPlotGraph dg in dynamicPlotGraphList) 
+            foreach (DynamicPlotGraph dg in dynamicPlotGraphList)
                 dg.SetPlayerCarId(playerCarId);
         }
 
@@ -194,8 +197,8 @@ namespace F1TS
             Debug.Log("NEW FASTEST LAP, dale carla");
 
             List<UIVertex> v = new List<UIVertex>();
-            List< Vector3Int > t = new List<Vector3Int>();
-            foreach(DynamicPlotGraph dg in dynamicPlotGraphList)
+            List<Vector3Int> t = new List<Vector3Int>();
+            foreach (DynamicPlotGraph dg in dynamicPlotGraphList)
             {
                 v.AddRange(dg.GetShapeRendererVertecies());
                 t.AddRange(dg.GetShapeRendererTriangles());
@@ -203,6 +206,7 @@ namespace F1TS
 
             LapGraphData lapGraphData = new LapGraphData(trackId, time, v, t);
             print("Objeto creado, listo para guardar");
+            SaveSystem.SaveObject("SavedLapTrack" + trackId.ToString() + ".track", lapGraphData);
         }
 
 
@@ -212,6 +216,19 @@ namespace F1TS
             trackLength = length;
             foreach (DynamicPlotGraph dg in dynamicPlotGraphList)
                 dg.ChangeTrackLength(length);
+        }
+
+        [Button]
+        private void LoadTrack(sbyte trackId)
+        {
+            Debug.Log("Track to load: " + trackId);
+
+            LapGraphData lapGraphData = SaveSystem.LoadObject("SavedLapTrack" + trackId.ToString() + ".track") as LapGraphData;
+            if(lapGraphData != null) 
+                Debug.Log("Vuelta cargada");
+
+            staticBestLapGraph.PlotGraph(lapGraphData.GetVertecies(), lapGraphData.GetTriangles(), Manager.instance.colorPalette.GraphBestLap);
+
         }
     }
 }

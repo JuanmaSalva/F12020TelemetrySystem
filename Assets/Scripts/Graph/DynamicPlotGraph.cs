@@ -80,7 +80,7 @@ namespace F1TS
 
         public void NewLapStarted()
         {
-            staticPlotGraph.PlotGraph(shapeRenderer.GetVertecies(), shapeRenderer.GetTriangles());
+            staticPlotGraph.PlotGraph(shapeRenderer.GetVertecies(), shapeRenderer.GetTriangles(), Manager.instance.colorPalette.GraphLastLap);
             shapeRenderer.Clear();
             lines.Clear();
         }
@@ -97,6 +97,7 @@ namespace F1TS
 
         public void ChangeTrackLength(short length)
         {
+            staticPlotGraph.graphInfo.MaxXValue = length;
             graphInfo.MaxXValue = length;
         }
     }
