@@ -59,9 +59,31 @@ namespace F1TS
         [TabGroup("Parents")]
         public Transform axisGraphsParent;
 
+
+        [DllImport("F12020Telemetry")]
+        private static extern byte F1TS_playerCarIndex();
+        [DllImport("F12020Telemetry")]
+        private static extern float F1TS_lapDistance(byte carId);
+        [DllImport("F12020Telemetry")]
+        private static extern short F1TS_trackLength();
+
+        [DllImport("F12020Telemetry")]
+        private static extern byte F1TS_currentLapNum(byte carId);
+
+
+
         private List<AxisPlotGraph> axisList;
         private List<DynamicPlotGraph> dynamicPlotGraphList;
         private StaticPlotGraph staticBestLapGraph; //for saved data
+
+
+        private float currentLapDistance;
+        private float maxDistance = 0;
+        private short trackLength;
+        private sbyte trackId = -1;
+        private byte playerCarId;
+
+
 
         void Start()
         {
@@ -94,6 +116,8 @@ namespace F1TS
 
             InitDynamicPlotGraphs();
             EventManager.instance.AddListener(this);
+            Manager.instance.AddGameObjectDependantFromF1TS(this.gameObject);
+
 
             staticBestLapGraph = InstantiateStaticPlotGraph(null, "BestLap");
         }
@@ -140,23 +164,6 @@ namespace F1TS
 
 
 
-        [DllImport("F12020Telemetry")]
-        private static extern byte F1TS_playerCarIndex();
-        [DllImport("F12020Telemetry")]
-        private static extern float F1TS_lapDistance(byte carId);
-        [DllImport("F12020Telemetry")]
-        private static extern short F1TS_trackLength();
-
-        [DllImport("F12020Telemetry")]
-        private static extern byte F1TS_currentLapNum(byte carId);
-
-
-
-        private float currentLapDistance;
-        private float maxDistance = 0;
-        private short trackLength;
-        private sbyte trackId = -1;
-        private byte playerCarId;
 
         private void InitDynamicPlotGraphs()
         {
