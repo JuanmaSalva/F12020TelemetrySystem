@@ -59,6 +59,7 @@ public class Dash : TelemetryListener
     //TODO los puntos de las revs
 
     private byte currentPlayerCarId = 0;
+    private float maxErsStored = 0;
 
     void Start()
     {
@@ -122,8 +123,14 @@ public class Dash : TelemetryListener
         }
     }
 
+    private void UpdateErs()
+    {
+
+    }
+
     public override void OnPlayerCarIdChanged(byte playerCarId)
     {
         currentPlayerCarId = playerCarId;
     }
+
 }

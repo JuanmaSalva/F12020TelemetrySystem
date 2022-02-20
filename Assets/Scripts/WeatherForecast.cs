@@ -11,15 +11,11 @@ public class WeatherForecast : MonoBehaviour
     public TextMeshProUGUI airTemp;
     public TextMeshProUGUI trackTemp;
 
-    // Start is called before the first frame update
-    void Start()
+    public void UpdateInfo(Sprite weatherSprite, byte timeoffset, sbyte tTemp, sbyte aTemp)
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        weatherIcon.sprite = weatherSprite;
+        time.text = "+ " + timeoffset.ToString() + "min";
+        airTemp.text = "A: " + aTemp.ToString() + "º";
+        trackTemp.text = "T: " + tTemp.ToString() + "º";
     }
 }

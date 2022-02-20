@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Runtime.InteropServices;
 
-public class TyreController : MonoBehaviour
+public class TyreController : TelemetryListener
 {
     [DllImport("F12020Telemetry")]
     private static extern ushort F1TS_maxGears(byte carId);
@@ -26,10 +26,13 @@ public class TyreController : MonoBehaviour
     
     public Tyre[] tyres;
 
+    private byte currentPlayerCarId = 0;
+
 
     private void Start()
     {
         Manager.instance.AddGameObjectDependantFromF1TS(this.gameObject);
+        EventManager.instance.AddListener(this);
         foreach (Tyre tyre in tyres)
             tyre.ChangeColor();
     }
@@ -52,18 +55,19 @@ public class TyreController : MonoBehaviour
 
     void UpdateTyreCompound(byte tyre)
     {
-        ushort curretnCompund = F1TS_actualTyreCompound(0);
+        ushort curretnCompund = F1TS_actualTyreCompound(currentPlayerCarId);
+        print("Current compound: " + curretnCompund);
         tyres[tyre].compound.text = tyres[tyre].GetCompundString(curretnCompund);
     }
     
     void UpdateTyreWear(byte tyre)
     {
-        tyres[tyre].wear.text = (100 - F1TS_tyresWear(0, tyre)) + "%";
+        tyres[tyre].wear.text = (100 - F1TS_tyresWear(currentPlayerCarId, tyre)) + "%";
     }
     
     void UpdateTyreSurfaceTemp(byte tyre)
     {
-        ushort temp = F1TS_tyresSurfaceTemperature(0, tyre);
+        ushort temp = F1TS_tyresSurfaceTemperature(currentPlayerCarId, tyre);
         if (temp == 0) 
             tyres[tyre].surfaceTemp.text = "Surface temp: - °C";
         else
@@ -72,21 +76,26 @@ public class TyreController : MonoBehaviour
     
     void UpdateTyreInnerTemp(byte tyre)
     {
-        ushort temp = F1TS_tyresInnerTemperature(0, tyre);
+        ushort temp = F1TS_tyresInnerTemperature(currentPlayerCarId, tyre);
         if (temp == 0) 
             tyres[tyre].innerTemp.text = "Inner temp: - °C";
         else
-            tyres[tyre].innerTemp.text = "Inner temp: " + F1TS_tyresInnerTemperature(0, tyre) + "°C";
+            tyres[tyre].innerTemp.text = "Inner temp: " + F1TS_tyresInnerTemperature(currentPlayerCarId, tyre) + "°C";
     }
     
     void UpdateTyreLaps(byte tyre)
     {
-        tyres[tyre].laps.text = "Laps: " + F1TS_tyresAgeLaps(0);
+        tyres[tyre].laps.text = "Laps: " + F1TS_tyresAgeLaps(currentPlayerCarId);
     }
     
     
     void UpdateTyrePresure(byte tyre)
     {
-        tyres[tyre].presure.text = "Presure: " + F1TS_tyrePressure(0, tyre);
+        tyres[tyre].presure.text = "Presure: " + F1TS_tyrePressure(currentPlayerCarId, tyre);
+    }
+
+    public override void OnPlayerCarIdChanged(byte playerCarId)
+    {
+        currentPlayerCarId = playerCarId;
     }
 }

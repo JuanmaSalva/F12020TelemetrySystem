@@ -987,7 +987,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 1.1999512, y: 5.799988}
+  m_AnchoredPosition: {x: 1.1999512, y: -9.500002}
   m_SizeDelta: {x: -38.94, y: -40.451}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &123469066
@@ -1122,7 +1122,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -28.061035, y: 5.799988}
+  m_AnchoredPosition: {x: -28.061035, y: -9.5}
   m_SizeDelta: {x: -73.267, y: -40.451}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &181701763
@@ -1471,6 +1471,13 @@ MonoBehaviour:
   currentTrackTemp: {fileID: 123469066}
   trackIcon: {fileID: 181701763}
   airIcon: {fileID: 1957445026}
+  weatherSprites:
+  - {fileID: 21300000, guid: b3e70048c97deba4b84c0675f46c6ad3, type: 3}
+  - {fileID: 21300000, guid: 1d8c81ce3b1a32d47bc35b91e618d986, type: 3}
+  - {fileID: 21300000, guid: ee7441d1d6eb08044b5ae66e54073216, type: 3}
+  - {fileID: 21300000, guid: 673e71670796492449b146626d7d747d, type: 3}
+  - {fileID: 21300000, guid: 0657f6b3a149e2449bfee381968705bb, type: 3}
+  - {fileID: 21300000, guid: 2a56ef08855919c4c8bf332bb10974d4, type: 3}
   futureWeatherForecasts:
   - {fileID: 1217880681}
   - {fileID: 453865160}
@@ -1579,6 +1586,10 @@ PrefabInstance:
     - target: {fileID: 4342520270718476729, guid: 14141e0aaeab176458ff164ecdba64af, type: 3}
       propertyPath: m_Name
       value: FrontRight
+      objectReference: {fileID: 0}
+    - target: {fileID: 5873803200869735040, guid: 14141e0aaeab176458ff164ecdba64af, type: 3}
+      propertyPath: m_text
+      value: Front right
       objectReference: {fileID: 0}
     - target: {fileID: 6418939931298938367, guid: 14141e0aaeab176458ff164ecdba64af, type: 3}
       propertyPath: m_AnchorMax.y
@@ -1940,6 +1951,10 @@ PrefabInstance:
     serializedVersion: 2
     m_TransformParent: {fileID: 1039052406}
     m_Modifications:
+    - target: {fileID: 478362146378097440, guid: 3a1f5b5bde5297c4bac13a0693ed5d98, type: 3}
+      propertyPath: m_text
+      value: Rear left
+      objectReference: {fileID: 0}
     - target: {fileID: 2110845474939674846, guid: 3a1f5b5bde5297c4bac13a0693ed5d98, type: 3}
       propertyPath: m_Name
       value: RearLeft
@@ -3548,6 +3563,10 @@ PrefabInstance:
     - target: {fileID: 4342520270718476729, guid: 14141e0aaeab176458ff164ecdba64af, type: 3}
       propertyPath: m_Name
       value: RearRight
+      objectReference: {fileID: 0}
+    - target: {fileID: 5873803200869735040, guid: 14141e0aaeab176458ff164ecdba64af, type: 3}
+      propertyPath: m_text
+      value: Rear right
       objectReference: {fileID: 0}
     - target: {fileID: 6418939931298938367, guid: 14141e0aaeab176458ff164ecdba64af, type: 3}
       propertyPath: m_AnchorMax.y
@@ -6358,7 +6377,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -28.061035, y: -10.299988}
+  m_AnchoredPosition: {x: -28.061035, y: 6.2}
   m_SizeDelta: {x: -73.267, y: -40.451}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1957445026
@@ -7046,7 +7065,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 2.6000977, y: -10.299988}
+  m_AnchoredPosition: {x: 2.6000977, y: 6.199993}
   m_SizeDelta: {x: -38.94, y: -40.451}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2122090680
