@@ -56,7 +56,6 @@ public class TyreController : TelemetryListener
     void UpdateTyreCompound(byte tyre)
     {
         ushort curretnCompund = F1TS_actualTyreCompound(currentPlayerCarId);
-        print("Current compound: " + curretnCompund);
         tyres[tyre].compound.text = tyres[tyre].GetCompundString(curretnCompund);
     }
     

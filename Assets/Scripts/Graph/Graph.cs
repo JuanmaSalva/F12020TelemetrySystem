@@ -58,6 +58,8 @@ namespace F1TS
         public Transform staticGraphsParent;
         [TabGroup("Parents")]
         public Transform axisGraphsParent;
+        [TabGroup("Parents")]
+        public Transform bestLapGraphParent;
 
 
         [DllImport("F12020Telemetry")]
@@ -92,34 +94,34 @@ namespace F1TS
 
             InstantiateAxis(speedAxisInfo, speedGraphInfo, "SpeedAxis");
             InstantiateDynamicPlotGraph<DynamicSpeedGraph>(speedGraphInfo, "DynamicSpeedGraph");
-            InstantiateStaticPlotGraph(dynamicPlotGraphList[dynamicPlotGraphList.Count - 1], "LastLapStaticSpeedGraph");
+            InstantiateStaticPlotGraph(dynamicPlotGraphList[dynamicPlotGraphList.Count - 1], "LastLapStaticSpeedGraph", staticGraphsParent);
 
             InstantiateAxis(stearingAxisInfo, stearingGraphInfo, "StearingAxis");
             InstantiateDynamicPlotGraph<DynamicStearingGraph>(stearingGraphInfo, "DynamicStearingGraph");
-            InstantiateStaticPlotGraph(dynamicPlotGraphList[dynamicPlotGraphList.Count - 1], "LastLapStaticStearingGraph");
+            InstantiateStaticPlotGraph(dynamicPlotGraphList[dynamicPlotGraphList.Count - 1], "LastLapStaticStearingGraph", staticGraphsParent);
 
             InstantiateAxis(throttleAxisInfo, throttleGraphInfo, "ThrottleAxis");
             InstantiateDynamicPlotGraph<DynamicThrottleGraph>(throttleGraphInfo, "DynamicThrottleGraph");
-            InstantiateStaticPlotGraph(dynamicPlotGraphList[dynamicPlotGraphList.Count - 1], "LastLapStaticSThrottleGraph");
+            InstantiateStaticPlotGraph(dynamicPlotGraphList[dynamicPlotGraphList.Count - 1], "LastLapStaticSThrottleGraph", staticGraphsParent);
 
             InstantiateAxis(brakeAxisInfo, brakeGraphInfo, "BrakeAxis");
             InstantiateDynamicPlotGraph<DynamicBrakeGraph>(brakeGraphInfo, "DynamicBrakeGraph");
-            InstantiateStaticPlotGraph(dynamicPlotGraphList[dynamicPlotGraphList.Count - 1], "LastLapStaticBrakeGraph");
+            InstantiateStaticPlotGraph(dynamicPlotGraphList[dynamicPlotGraphList.Count - 1], "LastLapStaticBrakeGraph", staticGraphsParent);
 
             InstantiateAxis(gearAxisInfo, gearGraphInfo, "GearAxis");
             InstantiateDynamicPlotGraph<DynamicGearGraph>(gearGraphInfo, "DynamicGearGraph");
-            InstantiateStaticPlotGraph(dynamicPlotGraphList[dynamicPlotGraphList.Count - 1], "LastLapStaticGearGraph");
+            InstantiateStaticPlotGraph(dynamicPlotGraphList[dynamicPlotGraphList.Count - 1], "LastLapStaticGearGraph", staticGraphsParent);
 
             InstantiateAxis(drsAxisInfo, drsGraphInfo, "DRSAxis");
             InstantiateDynamicPlotGraph<DynamicDRSGraph>(drsGraphInfo, "DynamicDRSGraph");
-            InstantiateStaticPlotGraph(dynamicPlotGraphList[dynamicPlotGraphList.Count - 1], "LastLapStaticDRSGraph");
+            InstantiateStaticPlotGraph(dynamicPlotGraphList[dynamicPlotGraphList.Count - 1], "LastLapStaticDRSGraph", staticGraphsParent);
 
             ChangePlayerCarIndxOnDynamicGraphs();
             EventManager.instance.AddListener(this);
             Manager.instance.AddGameObjectDependantFromF1TS(this.gameObject);
 
 
-            staticBestLapGraph = InstantiateStaticPlotGraph(null, "BestLap");
+            staticBestLapGraph = InstantiateStaticPlotGraph(null, "BestLap", bestLapGraphParent);
         }
 
         private void InstantiateAxis(AxisInfo axisInfo, GraphInfo graphInfo, string name)
@@ -149,9 +151,9 @@ namespace F1TS
             dynamicPlotGraphList.Add(dynamicPlotGraph);
         }
 
-        private StaticPlotGraph InstantiateStaticPlotGraph(DynamicPlotGraph dynamicPlotGraph, string name)
+        private StaticPlotGraph InstantiateStaticPlotGraph(DynamicPlotGraph dynamicPlotGraph, string name, Transform parent)
         {
-            GameObject obj = Instantiate(graphObjPrefab, staticGraphsParent);
+            GameObject obj = Instantiate(graphObjPrefab, parent);
             obj.name = name;
             StaticPlotGraph staticPlotGraph = obj.AddComponent<StaticPlotGraph>();
             if(dynamicPlotGraph != null) 
@@ -167,7 +169,6 @@ namespace F1TS
 
         private void ChangePlayerCarIndxOnDynamicGraphs()
         {
-            //TODO esto se deberia de mirar mas a menudo
             foreach (DynamicPlotGraph dg in dynamicPlotGraphList)
                 dg.SetPlayerCarId(currentPlayerCarId);
         }
@@ -242,6 +243,12 @@ namespace F1TS
             ChangePlayerCarIndxOnDynamicGraphs();
         }
 
+        public override void OnLapCleared()
+        {
+            foreach (DynamicPlotGraph dg in dynamicPlotGraphList)
+                dg.Clear();
+        }
+
         [Button]
         private void LoadTrack(sbyte trackId)
         {
@@ -253,5 +260,6 @@ namespace F1TS
 
             staticBestLapGraph.PlotGraph(lapGraphData.GetVertecies(), lapGraphData.GetTriangles(), Manager.instance.colorPalette.GraphBestLap);
         }
+
     }
 }

@@ -9,9 +9,6 @@ namespace F1TS
 {
     public class StaticPlotGraph : MonoBehaviour
     {
-
-        //private float initialYPos {get; set;}
-
         public GraphInfo graphInfo { get; set; }
         private ShapeRenderer shapeRenderer;
 
