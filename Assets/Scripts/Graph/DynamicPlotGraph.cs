@@ -85,6 +85,12 @@ namespace F1TS
             lines.Clear();
         }
 
+        public void Clear()
+        {
+            shapeRenderer.Clear();
+            lines.Clear();
+        }
+
         public List<UIVertex> GetShapeRendererVertecies()
         {
             return shapeRenderer.GetVertecies();

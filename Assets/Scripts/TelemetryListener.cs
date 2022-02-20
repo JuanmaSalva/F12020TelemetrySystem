@@ -13,5 +13,5 @@ public class TelemetryListener : MonoBehaviour
 
     public virtual void OnNewTrack(short length, sbyte trackId) { }
 
-
+    public virtual void OnLapCleared() { }
 }

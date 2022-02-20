@@ -24,6 +24,8 @@ public class EventManager : MonoBehaviour
     private static extern float F1TS_bestLapTime(byte id);
     [DllImport("F12020Telemetry")]
     private static extern sbyte F1TS_trackId();
+    [DllImport("F12020Telemetry")]
+    private static extern ushort F1TS_sector2(byte carId);
 
 
     private byte currentPlayerCarIndex = 0;
@@ -47,6 +49,10 @@ public class EventManager : MonoBehaviour
         listeners = new List<TelemetryListener>();
     }
 
+    private void Start()
+    {
+        Manager.instance.AddGameObjectDependantFromF1TS(this.gameObject);
+    }
 
     public void AddListener(TelemetryListener listener)
     {
@@ -109,6 +115,13 @@ public class EventManager : MonoBehaviour
         else if (F1TS_sector(currentPlayerCarIndex) == 2)
         {
             onLapStarted = false;
+            
+            if(F1TS_sector2(currentPlayerCarIndex) == 0)
+            {
+                //limpiamos el grafo
+                foreach (TelemetryListener tl in listeners)
+                    tl.OnLapCleared();
+            }
         }
         return false;
     }

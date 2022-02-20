@@ -57,6 +57,8 @@ public class Weather : MonoBehaviour
             wf.airTemp.color = Manager.instance.colorPalette.PanelInfo;
             wf.trackTemp.color = Manager.instance.colorPalette.PanelInfo;
         }
+
+        Manager.instance.AddGameObjectDependantFromF1TS(this.gameObject);
     }
 
 

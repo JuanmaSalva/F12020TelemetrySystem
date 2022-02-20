@@ -56,7 +56,7 @@ public class CurrentLapInfo : TelemetryListener
         if (currentLapMili != 0.0)
         {
             int m = currentLapMili / 60000;
-            int secMill = (currentLapMili - m * 6000);
+            int secMill = (currentLapMili - m * 60000);
             int s = secMill / 1000;
             int ms = secMill % 1000;
             currentLapText.text = "Lap: " + m.ToString("00") + "," + s.ToString("00") + "." + ms.ToString("000");

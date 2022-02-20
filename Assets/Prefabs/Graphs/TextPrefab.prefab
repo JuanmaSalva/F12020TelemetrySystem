@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 564323162407343804}
   - component: {fileID: 5974970561249097957}
   - component: {fileID: 3916004486213563476}
+  - component: {fileID: 1008644805123686177}
   m_Layer: 5
   m_Name: Panel
   m_TagString: Untagged
@@ -76,6 +77,28 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!223 &1008644805123686177
+Canvas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1710398715456578259}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 2
+  m_Camera: {fileID: 0}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 1
+  m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
+  m_AdditionalShaderChannelsFlag: 0
+  m_UpdateRectTransformForStandalone: 0
+  m_SortingLayerID: 0
+  m_SortingOrder: 10
+  m_TargetDisplay: 0
 --- !u!1 &8163209156380888241
 GameObject:
   m_ObjectHideFlags: 0
@@ -87,6 +110,7 @@ GameObject:
   - component: {fileID: 4872719114548434203}
   - component: {fileID: 8450165941834163770}
   - component: {fileID: 2084472633669703}
+  - component: {fileID: 5145824528941295489}
   m_Layer: 5
   m_Name: TextPrefab
   m_TagString: Untagged
@@ -112,7 +136,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 794, y: 447}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 151.9691, y: 50}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!222 &8450165941834163770
@@ -212,3 +236,25 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!223 &5145824528941295489
+Canvas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8163209156380888241}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 2
+  m_Camera: {fileID: 0}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 1
+  m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
+  m_AdditionalShaderChannelsFlag: 25
+  m_UpdateRectTransformForStandalone: 0
+  m_SortingLayerID: 0
+  m_SortingOrder: 11
+  m_TargetDisplay: 0
