@@ -21,6 +21,7 @@ public class CurrentTrack : TelemetryListener
     private void Start()
     {
         EventManager.instance.AddListener(this);
+        Manager.instance.AddGameObjectDependantFromF1TS(this.gameObject);
     }
 
     public override void OnNewTrack(short length, sbyte trackId)

@@ -27,7 +27,7 @@ public class EventManager : MonoBehaviour
 
 
     private byte currentPlayerCarIndex = 0;
-    private short currentLap = -10; //invalid number
+    private short currentLap = 0;
     private sbyte currentTrackId = -1; //invalid number
     private short currentTrackLength = 0;
     private float bestLapTime = float.MaxValue;

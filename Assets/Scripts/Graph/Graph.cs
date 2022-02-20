@@ -59,9 +59,31 @@ namespace F1TS
         [TabGroup("Parents")]
         public Transform axisGraphsParent;
 
+
+        [DllImport("F12020Telemetry")]
+        private static extern byte F1TS_playerCarIndex();
+        [DllImport("F12020Telemetry")]
+        private static extern float F1TS_lapDistance(byte carId);
+        [DllImport("F12020Telemetry")]
+        private static extern short F1TS_trackLength();
+
+        [DllImport("F12020Telemetry")]
+        private static extern byte F1TS_currentLapNum(byte carId);
+
+
+
         private List<AxisPlotGraph> axisList;
         private List<DynamicPlotGraph> dynamicPlotGraphList;
         private StaticPlotGraph staticBestLapGraph; //for saved data
+
+
+        private float currentLapDistance;
+        private float maxDistance = 0;
+        private short trackLength;
+        private sbyte trackId = -1;
+        private byte currentPlayerCarId = 0;
+
+
 
         void Start()
         {
@@ -92,8 +114,10 @@ namespace F1TS
             InstantiateDynamicPlotGraph<DynamicDRSGraph>(drsGraphInfo, "DynamicDRSGraph");
             InstantiateStaticPlotGraph(dynamicPlotGraphList[dynamicPlotGraphList.Count - 1], "LastLapStaticDRSGraph");
 
-            InitDynamicPlotGraphs();
+            ChangePlayerCarIndxOnDynamicGraphs();
             EventManager.instance.AddListener(this);
+            Manager.instance.AddGameObjectDependantFromF1TS(this.gameObject);
+
 
             staticBestLapGraph = InstantiateStaticPlotGraph(null, "BestLap");
         }
@@ -140,30 +164,12 @@ namespace F1TS
 
 
 
-        [DllImport("F12020Telemetry")]
-        private static extern byte F1TS_playerCarIndex();
-        [DllImport("F12020Telemetry")]
-        private static extern float F1TS_lapDistance(byte carId);
-        [DllImport("F12020Telemetry")]
-        private static extern short F1TS_trackLength();
 
-        [DllImport("F12020Telemetry")]
-        private static extern byte F1TS_currentLapNum(byte carId);
-
-
-
-        private float currentLapDistance;
-        private float maxDistance = 0;
-        private short trackLength;
-        private sbyte trackId = -1;
-        private byte playerCarId;
-
-        private void InitDynamicPlotGraphs()
+        private void ChangePlayerCarIndxOnDynamicGraphs()
         {
-            playerCarId = F1TS_playerCarIndex();
             //TODO esto se deberia de mirar mas a menudo
             foreach (DynamicPlotGraph dg in dynamicPlotGraphList)
-                dg.SetPlayerCarId(playerCarId);
+                dg.SetPlayerCarId(currentPlayerCarId);
         }
 
 
@@ -171,7 +177,7 @@ namespace F1TS
         {
             if (trackLength > 0)
             {
-                currentLapDistance = F1TS_lapDistance(playerCarId);
+                currentLapDistance = F1TS_lapDistance(currentPlayerCarId);
                 if (currentLapDistance >= 0)
                 {
                     if (maxDistance < currentLapDistance)
@@ -209,15 +215,16 @@ namespace F1TS
 
             LapGraphData lapGraphData = new LapGraphData(trackId, time, v, t);
             print("Objeto creado, listo para guardar");
-            Thread thread = new Thread(SaveAndShowFastestLap);
-            thread.Start(lapGraphData);
+            //Thread thread = new Thread(SaveAndShowFastestLap);
+            //thread.Start(lapGraphData);
+            SaveAndShowFastestLap(lapGraphData);
         }
 
-        private void SaveAndShowFastestLap(object lapGraphData)
+        private void SaveAndShowFastestLap(LapGraphData lapGraphData)
         {
-            LapGraphData aux = lapGraphData as LapGraphData;
+            //LapGraphData aux = lapGraphData as LapGraphData;
             SaveSystem.SaveObject("SavedLapTrack" + trackId.ToString() + ".track", lapGraphData);
-            staticBestLapGraph.PlotGraph(aux.GetVertecies(), aux.GetTriangles(), Manager.instance.colorPalette.GraphBestLap);
+            staticBestLapGraph.PlotGraph(lapGraphData.GetVertecies(), lapGraphData.GetTriangles(), Manager.instance.colorPalette.GraphBestLap);
         }
 
 
@@ -227,6 +234,12 @@ namespace F1TS
             trackLength = length;
             foreach (DynamicPlotGraph dg in dynamicPlotGraphList)
                 dg.ChangeTrackLength(length);
+        }
+
+        public override void OnPlayerCarIdChanged(byte playerCarId)
+        {
+            currentPlayerCarId = playerCarId;
+            ChangePlayerCarIndxOnDynamicGraphs();
         }
 
         [Button]
