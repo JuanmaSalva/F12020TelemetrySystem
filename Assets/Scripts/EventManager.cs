@@ -28,15 +28,15 @@ public class EventManager : MonoBehaviour
     private static extern ushort F1TS_sector2(byte carId);
 
 
-    private byte currentPlayerCarIndex = 0;
-    private short currentLap = 0;
-    private sbyte currentTrackId = -1; //invalid number
-    private short currentTrackLength = 0;
-    private float bestLapTime = float.MaxValue;
+    private byte _currentPlayerCarIndex = 0;
+    private short _currentLap = 0;
+    private sbyte _currentTrackId = -1; //invalid number
+    private short _currentTrackLength = 0;
+    private float _bestLapTime = float.MaxValue;
 
-    private bool onLapStarted = false;
+    private bool _onLapStarted = false;
 
-    private List<TelemetryListener> listeners;
+    private List<TelemetryListener> _listeners;
 
 
     private void Awake()
@@ -46,7 +46,7 @@ public class EventManager : MonoBehaviour
             instance = this;
         }
 
-        listeners = new List<TelemetryListener>();
+        _listeners = new List<TelemetryListener>();
     }
 
     private void Start()
@@ -56,7 +56,7 @@ public class EventManager : MonoBehaviour
 
     public void AddListener(TelemetryListener listener)
     {
-        listeners.Add(listener);
+        _listeners.Add(listener);
     }
 
 
@@ -64,26 +64,26 @@ public class EventManager : MonoBehaviour
     {
         if (CheckNewPlayerCarIndex())
         {
-            foreach (TelemetryListener tl in listeners)
-                tl.OnPlayerCarIdChanged(currentPlayerCarIndex);
+            foreach (TelemetryListener tl in _listeners)
+                tl.OnPlayerCarIdChanged(_currentPlayerCarIndex);
         }
 
         if (CheckNewTrack())
         {
-            foreach (TelemetryListener tl in listeners)
-                tl.OnNewTrack(currentTrackLength, currentTrackId);
+            foreach (TelemetryListener tl in _listeners)
+                tl.OnNewTrack(_currentTrackLength, _currentTrackId);
         }
 
         if (CheckNewLap())
         {
             if (CheckFastestLap())
             {
-                foreach (TelemetryListener tl in listeners)
-                    tl.OnFastestLap(F1TS_bestLapTime(currentPlayerCarIndex));
+                foreach (TelemetryListener tl in _listeners)
+                    tl.OnFastestLap(F1TS_bestLapTime(_currentPlayerCarIndex));
             }
 
-            foreach (TelemetryListener tl in listeners)
-                tl.OnNewLap(currentLap);
+            foreach (TelemetryListener tl in _listeners)
+                tl.OnNewLap(_currentLap);
         }
 
 
@@ -94,9 +94,9 @@ public class EventManager : MonoBehaviour
 
     bool CheckNewPlayerCarIndex()
     {
-        if(F1TS_playerCarIndex() != currentPlayerCarIndex)
+        if(F1TS_playerCarIndex() != _currentPlayerCarIndex)
         {
-            currentPlayerCarIndex = F1TS_playerCarIndex();
+            _currentPlayerCarIndex = F1TS_playerCarIndex();
             return true;
         }
         return false;
@@ -104,22 +104,22 @@ public class EventManager : MonoBehaviour
 
     bool CheckNewLap()
     {
-        if(!onLapStarted && F1TS_sector(currentPlayerCarIndex) == 0)
+        if(!_onLapStarted && F1TS_sector(_currentPlayerCarIndex) == 0)
         {
             print("New lap");
-            print(F1TS_lastTimeLap(currentPlayerCarIndex));
-            currentLap = F1TS_currentLapNum(currentPlayerCarIndex);
-            onLapStarted = true;
+            print(F1TS_lastTimeLap(_currentPlayerCarIndex));
+            _currentLap = F1TS_currentLapNum(_currentPlayerCarIndex);
+            _onLapStarted = true;
             return true;
         }
-        else if (F1TS_sector(currentPlayerCarIndex) == 2)
+        else if (F1TS_sector(_currentPlayerCarIndex) == 2)
         {
-            onLapStarted = false;
+            _onLapStarted = false;
             
-            if(F1TS_sector2(currentPlayerCarIndex) == 0)
+            if(F1TS_sector2(_currentPlayerCarIndex) == 0)
             {
                 //limpiamos el grafo
-                foreach (TelemetryListener tl in listeners)
+                foreach (TelemetryListener tl in _listeners)
                     tl.OnLapCleared();
             }
         }
@@ -128,9 +128,9 @@ public class EventManager : MonoBehaviour
 
     bool CheckFastestLap()
     {
-        if(F1TS_lastTimeLap(currentPlayerCarIndex) < bestLapTime && F1TS_lastTimeLap(currentPlayerCarIndex) >= 30) //30 = min seconds for a timed lap
+        if(F1TS_lastTimeLap(_currentPlayerCarIndex) < _bestLapTime && F1TS_lastTimeLap(_currentPlayerCarIndex) >= 30) //30 = min seconds for a timed lap
         {
-            bestLapTime = F1TS_lastTimeLap(currentPlayerCarIndex);
+            _bestLapTime = F1TS_lastTimeLap(_currentPlayerCarIndex);
             return true;
         }
         return false;
@@ -138,10 +138,10 @@ public class EventManager : MonoBehaviour
 
     bool CheckNewTrack()
     {
-        if(F1TS_trackId() != currentTrackId || currentTrackLength != F1TS_trackLength())
+        if(F1TS_trackId() != _currentTrackId || _currentTrackLength != F1TS_trackLength())
         {
-            currentTrackId = F1TS_trackId();
-            currentTrackLength = F1TS_trackLength();
+            _currentTrackId = F1TS_trackId();
+            _currentTrackLength = F1TS_trackLength();
             return true;
         }
         return false;

@@ -27,4 +27,7 @@ public class ColorPalette : ScriptableObject
     public Color GraphBestLap;
     [TabGroup("Graphs")]
     public Color GraphTitleBackGround;
+
+
+    [TabGroup("CarStatus")] public Color GreenStatus;
 }
