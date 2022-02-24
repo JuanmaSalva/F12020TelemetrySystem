@@ -30,4 +30,5 @@ public class ColorPalette : ScriptableObject
 
 
     [TabGroup("CarStatus")] public Color GreenStatus;
+    [TabGroup("CarStatus")] public Color RedStatus;
 }

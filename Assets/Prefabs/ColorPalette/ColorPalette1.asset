@@ -22,3 +22,4 @@ MonoBehaviour:
   GraphBestLap: {r: 0.6698113, g: 0.19378185, b: 0.19378185, a: 1}
   GraphTitleBackGround: {r: 0, g: 0, b: 0, a: 0.27450982}
   GreenStatus: {r: 0.34901962, g: 0.75686276, b: 0.20784314, a: 1}
+  RedStatus: {r: 0.67058825, g: 0.17254902, b: 0.17254902, a: 1}
