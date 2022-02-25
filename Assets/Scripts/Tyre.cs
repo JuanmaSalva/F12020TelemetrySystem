@@ -9,6 +9,10 @@ public class Tyre : MonoBehaviour
     public TextMeshProUGUI innerTemp;
     public TextMeshProUGUI brakeTemp;
 
+    public Image surface;
+    public Image inner;
+    public Image brake;
+    
     public void ChangeColor()
     {
         surfaceTemp.color = Manager.instance.colorPalette.PanelInfo;
