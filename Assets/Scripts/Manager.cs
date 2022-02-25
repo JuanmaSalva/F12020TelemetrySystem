@@ -23,8 +23,7 @@ public class Manager : MonoBehaviour
     public Canvas canvas;
     public ColorPalette colorPalette;
 
-    private List<GameObject> objectsDependantFromF1TS;
-    public sbyte currentTrack {get; set;}
+    private List<GameObject> _objectsDependantFromF1Ts;
 
     void Awake()
     {
@@ -46,9 +45,8 @@ public class Manager : MonoBehaviour
 #if UNITY_EDITOR
         EditorApplication.playModeStateChanged += HandleOnPlayModeChanged;
 #endif
-        objectsDependantFromF1TS = new List<GameObject>();
+        _objectsDependantFromF1Ts = new List<GameObject>();
         Application.targetFrameRate = 30;
-        currentTrack = -1;
     }
 
 
@@ -74,7 +72,7 @@ public class Manager : MonoBehaviour
 
     private void CloseTelemetrySystem()
     {
-        foreach (GameObject obj in objectsDependantFromF1TS)
+        foreach (GameObject obj in _objectsDependantFromF1Ts)
         {
             obj.SetActive(false);
         }
@@ -97,6 +95,6 @@ public class Manager : MonoBehaviour
 
     public void AddGameObjectDependantFromF1TS(GameObject obj)
     {
-        objectsDependantFromF1TS.Add(obj);
+        _objectsDependantFromF1Ts.Add(obj);
     }
 }

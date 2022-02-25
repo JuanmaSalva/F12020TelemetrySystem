@@ -53,13 +53,10 @@ public class Dash : TelemetryListener
     public Color low;
     public Color mid;
     public Color high;
+    
 
-
-
-    //TODO los puntos de las revs
-
-    private byte currentPlayerCarId = 0;
-    private float maxErsStored = 0;
+    private byte _currentPlayerCarId = 0;
+    private float _maxErsStored = 0;
 
     void Start()
     {
@@ -85,17 +82,17 @@ public class Dash : TelemetryListener
 
     void Update()
     {
-        speed.text = F1TS_speed(currentPlayerCarId).ToString();
-        revs.text = F1TS_engineRPM(currentPlayerCarId).ToString();
-        gear.text = F1TS_gear(currentPlayerCarId).ToString();
+        speed.text = F1TS_speed(_currentPlayerCarId).ToString();
+        revs.text = F1TS_engineRPM(_currentPlayerCarId).ToString();
+        gear.text = F1TS_gear(_currentPlayerCarId).ToString();
 
         //print(F1TS_ersStoreEnergy(currentPlayerCarId));
 
-        fuel.text = F1TS_fuelRemainingLaps(currentPlayerCarId).ToString("#,##");
-        throttle.transform.localScale = new Vector3(F1TS_throttle(currentPlayerCarId), 1, 1);
-        brake.transform.localScale = new Vector3(F1TS_brake(currentPlayerCarId), 1, 1);
+        fuel.text = F1TS_fuelRemainingLaps(_currentPlayerCarId).ToString("#,##");
+        throttle.transform.localScale = new Vector3(F1TS_throttle(_currentPlayerCarId), 1, 1);
+        brake.transform.localScale = new Vector3(F1TS_brake(_currentPlayerCarId), 1, 1);
 
-        UpdateRevs(F1TS_revLightsPercent(currentPlayerCarId));
+        UpdateRevs(F1TS_revLightsPercent(_currentPlayerCarId));
     }
 
     private void ClearRevLights()
@@ -130,7 +127,7 @@ public class Dash : TelemetryListener
 
     public override void OnPlayerCarIdChanged(byte playerCarId)
     {
-        currentPlayerCarId = playerCarId;
+        _currentPlayerCarId = playerCarId;
     }
 
 }

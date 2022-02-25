@@ -5,21 +5,15 @@ using UnityEngine.UI;
 
 public class Tyre : MonoBehaviour
 {
-    public Image sprite;
-    public TextMeshProUGUI wear;
     public TextMeshProUGUI surfaceTemp;
     public TextMeshProUGUI innerTemp;
-    public TextMeshProUGUI laps;
-    public TextMeshProUGUI compound;
-    public TextMeshProUGUI presure;
+    public TextMeshProUGUI brakeTemp;
 
     public void ChangeColor()
     {
         surfaceTemp.color = Manager.instance.colorPalette.PanelInfo;
         innerTemp.color = Manager.instance.colorPalette.PanelInfo;
-        laps.color = Manager.instance.colorPalette.PanelInfo;
-        compound.color = Manager.instance.colorPalette.PanelInfo;
-        presure.color = Manager.instance.colorPalette.PanelInfo;
+        brakeTemp.color = Manager.instance.colorPalette.PanelInfo;
     }
 
 

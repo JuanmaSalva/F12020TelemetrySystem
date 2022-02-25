@@ -1,9 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using TMPro;
-using UnityEngine;
-using F1TS;
 
 
 public class CurrentTrack : TelemetryListener
@@ -14,9 +10,6 @@ public class CurrentTrack : TelemetryListener
 
     public TextMeshProUGUI currentTrackText;
     public F1TS.Graph graph;
-
-    sbyte currentTrackId = 0;
-    string trackName;
 
     private void Start()
     {
