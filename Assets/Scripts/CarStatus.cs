@@ -1,6 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -16,7 +18,9 @@ public class CarStatus : TelemetryListener
     private static extern byte F1TS_rearWingDamage(byte carId);
     
     [DllImport("F12020Telemetry")]
-    private static extern ushort F1TS_tyresWear(byte carId, byte tyre);
+    private static extern byte F1TS_tyresWear(byte carId, byte tyre);
+    [DllImport("F12020Telemetry")]
+    private static extern byte F1TS_tyresDamage(byte carId, byte tyre);
     [DllImport("F12020Telemetry")]
     private static extern byte F1TS_engineDamage(byte carId);
     [DllImport("F12020Telemetry")]
@@ -31,7 +35,14 @@ public class CarStatus : TelemetryListener
     public Image[] cojinetes;
     public Image[] tyres;
 
-    private byte currentCarId = 0;
+    public TextMeshProUGUI[] tyresText;
+    public TextMeshProUGUI frontWingLeftText;
+    public TextMeshProUGUI frontWingRightText;
+    public TextMeshProUGUI engineText;
+    public TextMeshProUGUI gearBoxText;
+    
+    
+    private byte _currentCarId = 0;
     
     void Start()
     {
@@ -53,21 +64,34 @@ public class CarStatus : TelemetryListener
 
     void Update()
     {
+        byte aux;
+
+
+        aux = (byte)(100 - F1TS_frontLeftWingDamage(_currentCarId));
+        frontWingLeftText.text = aux.ToString() + "%";
         frontWingLeft.color = Color.Lerp(Manager.instance.colorPalette.RedStatus,
-            Manager.instance.colorPalette.GreenStatus, F1TS_frontLeftWingDamage(currentCarId) / 100.0f);
+            Manager.instance.colorPalette.GreenStatus, aux / 100.0f);
+
+        aux = (byte)(100 - F1TS_frontRightWingDamage(_currentCarId));
+        frontWingRightText.text = aux.ToString() + "%";
         frontWingRight.color = Color.Lerp(Manager.instance.colorPalette.RedStatus,
-            Manager.instance.colorPalette.GreenStatus, F1TS_frontRightWingDamage(currentCarId) / 100.0f);
+            Manager.instance.colorPalette.GreenStatus, aux / 100.0f);
         
-        if (F1TS_drsFault(currentCarId) == 1)
+        if (F1TS_drsFault(_currentCarId) == 1)
             DRS.color = Manager.instance.colorPalette.RedStatus;
         else
             DRS.color = Color.Lerp(Manager.instance.colorPalette.RedStatus,
-                Manager.instance.colorPalette.GreenStatus, F1TS_rearWingDamage(currentCarId) / 100.0f);
-        
+                Manager.instance.colorPalette.GreenStatus, (100 - F1TS_rearWingDamage(_currentCarId)) / 100.0f);
+
+        aux = (byte)(100 -F1TS_engineDamage(_currentCarId));
+        engineText.text = aux.ToString() + "%";
         engine.color = Color.Lerp(Manager.instance.colorPalette.RedStatus,
-            Manager.instance.colorPalette.GreenStatus, F1TS_engineDamage(currentCarId) / 100.0f);
+            Manager.instance.colorPalette.GreenStatus, aux / 100.0f);
+
+        aux = (byte)(100 -F1TS_gearBoxDamage(_currentCarId));
+        gearBoxText.text = aux.ToString() + "%";
         gearBox.color = Color.Lerp(Manager.instance.colorPalette.RedStatus,
-            Manager.instance.colorPalette.GreenStatus, F1TS_engineDamage(currentCarId) / 100.0f);
+            Manager.instance.colorPalette.GreenStatus, aux / 100.0f);
         
         UpdateWheels();
     }
@@ -76,14 +100,17 @@ public class CarStatus : TelemetryListener
     {
         for (byte i = 0; i < 4; i++)
         {
+            byte aux = (byte)(100 - Math.Max(F1TS_tyresWear(_currentCarId, i),
+                F1TS_tyresDamage(_currentCarId, i)));
+            tyresText[i].text = aux.ToString() + "%";
             tyres[i].color = Color.Lerp(Manager.instance.colorPalette.RedStatus,
-                Manager.instance.colorPalette.GreenStatus, F1TS_tyresWear(currentCarId, i) / 100.0f);
+                Manager.instance.colorPalette.GreenStatus, aux / 100.0f);
         }
     }
     
     
     public override void OnPlayerCarIdChanged(byte playerCarId)
     {
-        currentCarId = playerCarId;
+        _currentCarId = playerCarId;
     }
 }
