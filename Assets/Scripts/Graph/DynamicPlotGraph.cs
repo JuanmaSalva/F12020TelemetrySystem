@@ -113,6 +113,7 @@ namespace F1TS
 
         public void ChangeTrackLength(short length)
         {
+            Clear();
             staticPlotGraph.graphInfo.MaxXValue = length;
             graphInfo.MaxXValue = length;
         }
