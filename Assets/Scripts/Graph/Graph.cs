@@ -248,6 +248,7 @@ namespace F1TS
             foreach (DynamicPlotGraph dg in dynamicPlotGraphList)
                 dg.Clear();
         }
+        
 
         [Button]
         private void LoadTrack(sbyte trackId)
