@@ -11246,6 +11246,7 @@ MonoBehaviour:
   sector1Text: {fileID: 1304584052}
   sector2Text: {fileID: 449510407}
   sector3Text: {fileID: 807063005}
+  currentLapInfo: {fileID: 0}
 --- !u!1 &1740625371
 GameObject:
   m_ObjectHideFlags: 0
