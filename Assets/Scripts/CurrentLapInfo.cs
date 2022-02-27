@@ -26,6 +26,7 @@ public class CurrentLapInfo : TelemetryListener
     public TextMeshProUGUI sector2Text;
     public TextMeshProUGUI sector3Text;
 
+    public LapManager lapManager;
 
     private int _s1Time;
     private int _s2Time;
@@ -83,6 +84,48 @@ public class CurrentLapInfo : TelemetryListener
         }
     }
 
+    private void UpdateCurrentLapText(int currentLapMili)
+    {
+        //Lap time
+        if (currentLapMili != 0.0)
+        {
+            int m = currentLapMili / 60000;
+            int secMill = (currentLapMili - m * 60000);
+            int s = secMill / 1000;
+            int ms = secMill % 1000;
+            currentLapText.text = "Lap: " + m.ToString("00") + "," + s.ToString("00") + "." + ms.ToString("000");
+        }
+    }
+
+    private void Sector1(int currentLapMili)
+    {
+        int s = currentLapMili / 1000;
+        int ms = currentLapMili % 1000;
+        sector1Text.text = "Sector 1: 00," + s.ToString("00") + "." + ms.ToString("000");
+    }
+
+    private void Sector2(int currentLapMili)
+    {
+        ushort s1Time = F1TS_sector1(_currentPlayerCarId);
+        int s = s1Time / 1000;
+        int ms = s1Time % 1000;
+        sector1Text.text = "Sector 1: 00," + s.ToString("00") + "." + ms.ToString("000");
+        _lastS1Time = s1Time;
+        _sessionPersonalBestS1 = Math.Min(_lastS1Time, _sessionPersonalBestS1);
+        
+        if (_lastS1Time <= F1TS_bestOverallSector1TimeInMS(_currentPlayerCarId))
+            sector1Text.color = Manager.instance.colorPalette.OverallBestTime;
+        else if (_lastS1Time <= _sessionPersonalBestS1)
+            sector1Text.color = Manager.instance.colorPalette.PersonalBestTime;
+        else
+            sector1Text.color = Manager.instance.colorPalette.NormalTime;
+
+        int s2Time = currentLapMili - s1Time;
+        s = s2Time / 1000;
+        ms = s2Time % 1000;
+        sector2Text.text = "Sector 2: 00," + s.ToString("00") + "." + ms.ToString("000");
+    }
+    
     private void Sector3(int currentLapMili)
     {
         ushort s1Time = F1TS_sector1(_currentPlayerCarId);
@@ -108,48 +151,7 @@ public class CurrentLapInfo : TelemetryListener
         ms = s3Time % 1000;
         sector3Text.text = "Sector 3: 00," + s.ToString("00") + "." + ms.ToString("000");
     }
-
-    private void Sector2(int currentLapMili)
-    {
-        ushort s1Time = F1TS_sector1(_currentPlayerCarId);
-        int s = s1Time / 1000;
-        int ms = s1Time % 1000;
-        sector1Text.text = "Sector 1: 00," + s.ToString("00") + "." + ms.ToString("000");
-        _lastS1Time = s1Time;
-        _sessionPersonalBestS1 = Math.Min(_lastS1Time, _sessionPersonalBestS1);
-        
-        if (_lastS1Time <= F1TS_bestOverallSector1TimeInMS(_currentPlayerCarId))
-            sector1Text.color = Manager.instance.colorPalette.OverallBestTime;
-        else if (_lastS1Time <= _sessionPersonalBestS1)
-            sector1Text.color = Manager.instance.colorPalette.PersonalBestTime;
-        else
-            sector1Text.color = Manager.instance.colorPalette.NormalTime;
-
-        int s2Time = currentLapMili - s1Time;
-        s = s2Time / 1000;
-        ms = s2Time % 1000;
-        sector2Text.text = "Sector 2: 00," + s.ToString("00") + "." + ms.ToString("000");
-    }
-
-    private void Sector1(int currentLapMili)
-    {
-        int s = currentLapMili / 1000;
-        int ms = currentLapMili % 1000;
-        sector1Text.text = "Sector 1: 00," + s.ToString("00") + "." + ms.ToString("000");
-    }
-
-    private void UpdateCurrentLapText(int currentLapMili)
-    {
-        //Lap time
-        if (currentLapMili != 0.0)
-        {
-            int m = currentLapMili / 60000;
-            int secMill = (currentLapMili - m * 60000);
-            int s = secMill / 1000;
-            int ms = secMill % 1000;
-            currentLapText.text = "Lap: " + m.ToString("00") + "," + s.ToString("00") + "." + ms.ToString("000");
-        }
-    }
+   
 
     
     
@@ -160,6 +162,8 @@ public class CurrentLapInfo : TelemetryListener
         int lastS3 = lastLapMili - _lastS1Time - _lastS2Time;
         _sessionPersonalBestS3 = Math.Min(lastS3, _sessionPersonalBestS3);
         
+        lapManager.NewLap(lastLapMili, _lastS1Time, _lastS2Time, lastS3, lap);
+
         ResetTimes();
     }
 
