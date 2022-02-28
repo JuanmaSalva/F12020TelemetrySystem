@@ -31,7 +31,10 @@ public class FastestLapInfo : TelemetryListener
 	public TextMeshProUGUI sector2Text;
 	public TextMeshProUGUI sector3Text;
 
-	public CurrentLapInfo currentLapInfo;
+	
+	private int _overallBestS1 = Int32.MaxValue; //taking into account all cars on track
+	private int _overallBestS2 = Int32.MaxValue; //taking into account all cars on track
+	private int _overallBestS3 = Int32.MaxValue; //taking into account all cars on track
 
 	private int _s1Time;
 	private int _s2Time;
@@ -66,35 +69,33 @@ public class FastestLapInfo : TelemetryListener
 		ushort s1Time = F1TS_bestLapSector1TimeInMS(_currentPlayerCarId);
 		if (s1Time != 0)
 		{
-			if (s1Time <= F1TS_bestOverallSector1TimeInMS(_currentPlayerCarId))
-				sector1Text.color = Manager.instance.colorPalette.OverallBestTime;
-			else if (s1Time <= currentLapInfo.SessionBestS1())
-				sector1Text.color = Manager.instance.colorPalette.PersonalBestTime;
-			else
-				sector1Text.color = Manager.instance.colorPalette.NormalTime;
+			ChangeSectorTextColor(sector1Text, s1Time, 
+				F1TS_bestOverallSector1TimeInMS(_currentPlayerCarId), _overallBestS1);
 		}
 
 
 		ushort s2Time = F1TS_bestLapSector2TimeInMS(_currentPlayerCarId);
 		if(s2Time != 0){
-			if (s2Time <= F1TS_bestOverallSector2TimeInMS(_currentPlayerCarId))
-				sector2Text.color = Manager.instance.colorPalette.OverallBestTime;
-			else if (s2Time <= currentLapInfo.SessionBestS2())
-				sector2Text.color = Manager.instance.colorPalette.PersonalBestTime;
-			else
-				sector2Text.color = Manager.instance.colorPalette.NormalTime;
+			ChangeSectorTextColor(sector2Text, s2Time, 
+				F1TS_bestOverallSector2TimeInMS(_currentPlayerCarId), _overallBestS2);
 		}
 
 		int s3Time = F1TS_bestLapSector3TimeInMS(_currentPlayerCarId);
 		if(s3Time != 0)
 		{
-			if (s3Time <= F1TS_bestOverallSector3TimeInMS(_currentPlayerCarId))
-				sector3Text.color = Manager.instance.colorPalette.OverallBestTime;
-			else if (s3Time <= currentLapInfo.SessionBestS3())
-				sector3Text.color = Manager.instance.colorPalette.PersonalBestTime;
-			else
-				sector3Text.color = Manager.instance.colorPalette.NormalTime;
+			ChangeSectorTextColor(sector3Text, s3Time, 
+				F1TS_bestOverallSector3TimeInMS(_currentPlayerCarId), _overallBestS3);
 		}
+	}
+	
+	private void ChangeSectorTextColor(TextMeshProUGUI text, int time, int personalBest, int overallBest)
+	{
+		if (time <= overallBest)
+			text.color = Manager.instance.colorPalette.OverallBestTime;
+		else if (time <= personalBest)
+			text.color = Manager.instance.colorPalette.PersonalBestTime;
+		else
+			text.color = Manager.instance.colorPalette.NormalTime;
 	}
 
 	public override void OnFastestLap(float time)

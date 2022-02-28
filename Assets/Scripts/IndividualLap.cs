@@ -34,8 +34,8 @@ public class IndividualLap : MonoBehaviour
         lapTextTitle.text = "Lap " + lapNum.ToString();
         lapText.text = "Lap: " + FromTimeToStringFormat(l);
         sector1Text.text =  "Sector 1: " + FromTimeToStringFormat(s1);
-        sector2Text.text =  "Sector 2: " +FromTimeToStringFormat(s2);
-        sector3Text.text =  "Sector 3: " +FromTimeToStringFormat(s3);
+        sector2Text.text =  "Sector 2: " + FromTimeToStringFormat(s2);
+        sector3Text.text =  "Sector 3: " + FromTimeToStringFormat(s3);
     }
 
 

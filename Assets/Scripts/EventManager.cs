@@ -26,6 +26,8 @@ public class EventManager : MonoBehaviour
     private static extern sbyte F1TS_trackId();
     [DllImport("F12020Telemetry")]
     private static extern ushort F1TS_sector2(byte carId);
+    [DllImport("F12020Telemetry")]
+    private static extern byte F1TS_numActiveCars();
 
 
     private byte _currentPlayerCarIndex = 0;
@@ -33,6 +35,7 @@ public class EventManager : MonoBehaviour
     private sbyte _currentTrackId = -1; //invalid number
     private short _currentTrackLength = 0;
     private float _bestLapTime = float.MaxValue;
+    private byte _numActiveCars = 0;
 
     private bool _onLapStarted = false;
 
@@ -86,8 +89,13 @@ public class EventManager : MonoBehaviour
                 tl.OnNewLap(_currentLap);
         }
 
-
-
+        if (F1TS_numActiveCars() != _numActiveCars)
+        {
+            _numActiveCars = F1TS_numActiveCars();
+            foreach (TelemetryListener tl in _listeners)
+                tl.OnNumActiveCarsChange(_numActiveCars);
+            
+        }
 
     }
 

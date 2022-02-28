@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LapManager : MonoBehaviour
+public class LapManager : TelemetryListener
 {
     public GameObject IndividualLapPrefab;
     public Transform IndividualLapParent;
@@ -31,8 +31,14 @@ public class LapManager : MonoBehaviour
     private int _fastestOverallS2Time = Int32.MaxValue;
     private int _fastestOverallS3Time = Int32.MaxValue;
 
+    private byte _numActiveCars = 0;
 
-    private void Start()
+    void Start()
+    {
+        EventManager.instance.AddListener(this);
+    }
+
+    void Update()
     {
         
     }
@@ -46,15 +52,18 @@ public class LapManager : MonoBehaviour
         
         
     }
+
     
     public void FastestPersonalSector(int sector, int time)
     {
         
     }
 
-    public void FastestOverallSector(int sector, int time)
+    
+
+    public override void OnNumActiveCarsChange(byte numActiveCars)
     {
-        
+        _numActiveCars = numActiveCars;
     }
 
 }

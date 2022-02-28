@@ -20,6 +20,8 @@ public class CurrentLapInfo : TelemetryListener
     private static extern ushort F1TS_bestOverallSector1TimeInMS(byte carId);
     [DllImport("F12020Telemetry")]
     private static extern ushort F1TS_bestOverallSector2TimeInMS(byte carId);
+    [DllImport("F12020Telemetry")]
+    private static extern ushort F1TS_bestOverallSector3TimeInMS(byte carId);
 
     public TextMeshProUGUI currentLapText;
     public TextMeshProUGUI sector1Text;
@@ -32,9 +34,13 @@ public class CurrentLapInfo : TelemetryListener
     private int _s2Time;
     private int _s3Time;
 
-    private int _sessionPersonalBestS1 = Int32.MaxValue;
-    private int _sessionPersonalBestS2= Int32.MaxValue;
-    private int _sessionPersonalBestS3= Int32.MaxValue;
+    //private int _sessionPersonalBestS1 = Int32.MaxValue;
+    //private int _sessionPersonalBestS2= Int32.MaxValue;
+    //private int _sessionPersonalBestS3= Int32.MaxValue;
+    
+    private int _overallBestS1 = Int32.MaxValue; //taking into account all cars on track
+    private int _overallBestS2 = Int32.MaxValue; //taking into account all cars on track
+    private int _overallBestS3 = Int32.MaxValue; //taking into account all cars on track
 
     private int _lastS1Time;
     private int _lastS2Time;
@@ -99,68 +105,71 @@ public class CurrentLapInfo : TelemetryListener
 
     private void Sector1(int currentLapMili)
     {
-        int s = currentLapMili / 1000;
-        int ms = currentLapMili % 1000;
-        sector1Text.text = "Sector 1: 00," + s.ToString("00") + "." + ms.ToString("000");
+        sector1Text.text = "Sector 1: " + FromTimeToStringFormat(currentLapMili);
     }
 
     private void Sector2(int currentLapMili)
     {
         ushort s1Time = F1TS_sector1(_currentPlayerCarId);
-        int s = s1Time / 1000;
-        int ms = s1Time % 1000;
-        sector1Text.text = "Sector 1: 00," + s.ToString("00") + "." + ms.ToString("000");
+        sector1Text.text = "Sector 1: " + FromTimeToStringFormat(s1Time);
         _lastS1Time = s1Time;
-        _sessionPersonalBestS1 = Math.Min(_lastS1Time, _sessionPersonalBestS1);
         
         if (_lastS1Time <= F1TS_bestOverallSector1TimeInMS(_currentPlayerCarId))
-            sector1Text.color = Manager.instance.colorPalette.OverallBestTime;
-        else if (_lastS1Time <= _sessionPersonalBestS1)
-            sector1Text.color = Manager.instance.colorPalette.PersonalBestTime;
-        else
-            sector1Text.color = Manager.instance.colorPalette.NormalTime;
+            lapManager.FastestPersonalSector(1, F1TS_bestOverallSector1TimeInMS(_currentPlayerCarId));
+        
+        
+        ChangeSectorTextColor(sector1Text, _lastS1Time, F1TS_bestOverallSector1TimeInMS(_currentPlayerCarId));
 
         int s2Time = currentLapMili - s1Time;
-        s = s2Time / 1000;
-        ms = s2Time % 1000;
-        sector2Text.text = "Sector 2: 00," + s.ToString("00") + "." + ms.ToString("000");
+        sector2Text.text = "Sector 2: " + FromTimeToStringFormat(s2Time);
     }
     
     private void Sector3(int currentLapMili)
     {
         ushort s1Time = F1TS_sector1(_currentPlayerCarId);
-        int s = s1Time / 1000;
-        int ms = s1Time % 1000;
-        sector1Text.text = "Sector 1: 00," + s.ToString("00") + "." + ms.ToString("000");
+        sector1Text.text = "Sector 1: " + FromTimeToStringFormat(s1Time);
 
         ushort s2Time = F1TS_sector2(_currentPlayerCarId);
-        s = s2Time / 1000;
-        ms = s2Time % 1000;
-        sector2Text.text = "Sector 2: 00," + s.ToString("00") + "." + ms.ToString("000");
-        _lastS2Time = s2Time;
-        _sessionPersonalBestS2 = Math.Min(_lastS2Time, _sessionPersonalBestS2);
-        if (_lastS2Time <= F1TS_bestOverallSector2TimeInMS(_currentPlayerCarId))
-            sector2Text.color = Manager.instance.colorPalette.OverallBestTime;
-        else if (_lastS2Time <= _sessionPersonalBestS2)
-            sector2Text.color = Manager.instance.colorPalette.PersonalBestTime;
-        else
-            sector2Text.color = Manager.instance.colorPalette.NormalTime;
-
+        sector2Text.text = "Sector 2: " + FromTimeToStringFormat(s2Time);
+        
         int s3Time = currentLapMili - s1Time - s2Time;
-        s = s3Time / 1000;
-        ms = s3Time % 1000;
-        sector3Text.text = "Sector 3: 00," + s.ToString("00") + "." + ms.ToString("000");
+        sector3Text.text = "Sector 3: " + FromTimeToStringFormat(s3Time);
+        
+        _lastS2Time = s2Time;
+        if (_lastS2Time <= F1TS_bestOverallSector2TimeInMS(_currentPlayerCarId))
+            lapManager.FastestPersonalSector(2, F1TS_bestOverallSector2TimeInMS(_currentPlayerCarId));
+        
+        ChangeSectorTextColor(sector2Text, _lastS2Time, F1TS_bestOverallSector2TimeInMS(_currentPlayerCarId));
     }
-   
 
     
+    private void ChangeSectorTextColor(TextMeshProUGUI text, int time, int personalBest)
+    {
+        if (time <= _overallBestS1)
+            text.color = Manager.instance.colorPalette.OverallBestTime;
+        else if (time <= personalBest)
+            text.color = Manager.instance.colorPalette.PersonalBestTime;
+        else
+            text.color = Manager.instance.colorPalette.NormalTime;
+    }
+    
+    private String FromTimeToStringFormat(int time)
+    {            
+        int m = time / 60000;
+        int secMill = (time - m * 60000);
+        int s = secMill / 1000;
+        int ms = secMill % 1000;
+        return m.ToString("00") + "," + s.ToString("00") + "." + ms.ToString("000");
+    }
     
     
     public override void OnNewLap(int lap)
     {
         int lastLapMili = (int)(F1TS_lastTimeLap(_currentPlayerCarId) * 1000);
         int lastS3 = lastLapMili - _lastS1Time - _lastS2Time;
-        _sessionPersonalBestS3 = Math.Min(lastS3, _sessionPersonalBestS3);
+        if (lastS3 <= F1TS_bestOverallSector3TimeInMS(_currentPlayerCarId))
+            lapManager.FastestPersonalSector(3, F1TS_bestOverallSector3TimeInMS(_currentPlayerCarId));
+        
         
         lapManager.NewLap(lastLapMili, _lastS1Time, _lastS2Time, lastS3, lap);
 
@@ -172,16 +181,5 @@ public class CurrentLapInfo : TelemetryListener
         _currentPlayerCarId = playerCarId;
     }
 
-    public int SessionBestS1()
-    {
-        return _sessionPersonalBestS1;
-    }
-    public int SessionBestS2()
-    {
-        return _sessionPersonalBestS2;
-    }
-    public int SessionBestS3()
-    {
-        return _sessionPersonalBestS3;
-    }
+
 }
