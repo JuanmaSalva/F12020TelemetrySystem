@@ -1372,7 +1372,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 61.087, y: -28.385712}
+  m_AnchoredPosition: {x: 61.087036, y: -28.385681}
   m_SizeDelta: {x: 117.2953, y: 32.6604}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &98055372
@@ -2937,7 +2937,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -0.0008544922, y: -0.16384888}
+  m_AnchoredPosition: {x: -0.0008544922, y: -0.16381836}
   m_SizeDelta: {x: 0.17999268, y: 0}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &335582673
@@ -2958,7 +2958,7 @@ MonoBehaviour:
     m_Top: 0
     m_Bottom: 0
   m_ChildAlignment: 0
-  m_StartCorner: 0
+  m_StartCorner: 2
   m_StartAxis: 0
   m_CellSize: {x: 122.18, y: 50}
   m_Spacing: {x: 0, y: 0}
@@ -10635,7 +10635,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -0.0008239746, y: -0.0013580322}
+  m_AnchoredPosition: {x: -0.0008544922, y: -0.0013427734}
   m_SizeDelta: {x: 0.1800003, y: 0.3300171}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1681515486
@@ -11482,7 +11482,6 @@ MonoBehaviour:
   sector1Text: {fileID: 1304584052}
   sector2Text: {fileID: 449510407}
   sector3Text: {fileID: 807063005}
-  currentLapInfo: {fileID: 372517791}
 --- !u!1 &1740625371
 GameObject:
   m_ObjectHideFlags: 0
@@ -12697,7 +12696,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 61.087, y: -28.385712}
+  m_AnchoredPosition: {x: 61.087036, y: -28.385681}
   m_SizeDelta: {x: 117.2953, y: 32.6604}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1947986682
@@ -13166,6 +13165,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   IndividualLapPrefab: {fileID: 5549363102000660711, guid: 6f3088b774b0bdb479fc782db208657b, type: 3}
   IndividualLapParent: {fileID: 335582672}
+  currentLapInfo: {fileID: 372517791}
+  fastestLapInfo: {fileID: 1721428796}
 --- !u!1 &1991065131
 GameObject:
   m_ObjectHideFlags: 0

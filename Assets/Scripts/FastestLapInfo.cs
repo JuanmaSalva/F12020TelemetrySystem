@@ -37,7 +37,7 @@ public class FastestLapInfo : TelemetryListener
 	private int _overallBestS2 = Int32.MaxValue; //taking into account all cars on track
 	private int _overallBestS3 = Int32.MaxValue; //taking into account all cars on track
 
-	private int _lapTime;
+	private int _lapTime = Int32.MaxValue;
 	private int _s1Time;
 	private int _s2Time;
 	private int _s3Time;
@@ -105,11 +105,23 @@ public class FastestLapInfo : TelemetryListener
 	
 	public void SetOverallFastestSector(int sector, int time)
 	{
-        
+		switch (sector)
+		{
+			case 1:
+				_overallBestS1 = time;
+				break;
+			case 2:
+				_overallBestS2 = time;
+				break;
+			case 3:
+				_overallBestS3 = time;
+				break;
+		}
 	}
 	
 	public void SetOverallFastestLap(int time)
 	{
+		print("Ocerall fatest lap: " + time);
 		_overallBestLap = time;
 		ChangeTextColor(fastestLapText, _lapTime, _lapTime, _overallBestLap);
 	}
@@ -120,20 +132,14 @@ public class FastestLapInfo : TelemetryListener
 		if (time <= 0)
 			return;
 		
-		int s, ms;
-
 		//Lap time
 		int currentLapMili = (int)(time * 1000);
 		_lapTime = currentLapMili;
 		if (currentLapMili != 0.0)
 		{
-			int m = currentLapMili / 60000;
-			int secMill = (currentLapMili - m * 60000);
-			s = secMill / 1000;
-			ms = secMill % 1000;
-			fastestLapText.text = "Lap: " + m.ToString("00") + "," + s.ToString("00") + "." + ms.ToString("000");
+			fastestLapText.text = "Lap: " + FromTimeToStringFormat(currentLapMili);
 
-			if (time <= F1TS_bestLapTime(_currentPlayerCarId))
+			if (time <= _overallBestLap)
 				fastestLapText.color = Manager.instance.colorPalette.OverallBestTime;
 			else
 				fastestLapText.color = Manager.instance.colorPalette.PersonalBestTime;
@@ -141,21 +147,24 @@ public class FastestLapInfo : TelemetryListener
 
 
 		ushort s1Time = F1TS_bestLapSector1TimeInMS(_currentPlayerCarId);
-		s = s1Time / 1000;
-		ms = s1Time % 1000;
-		sector1Text.text = "Sector 1: 00," + s.ToString("00") + "." + ms.ToString("000");
+		sector1Text.text = "Sector 1: " + FromTimeToStringFormat(s1Time);
 
 
 		ushort s2Time = F1TS_bestLapSector2TimeInMS(_currentPlayerCarId);
-		s = s2Time / 1000;
-		ms = s2Time % 1000;
-		sector2Text.text = "Sector 2: 00," + s.ToString("00") + "." + ms.ToString("000");
+		sector2Text.text = "Sector 2: " + FromTimeToStringFormat(s2Time);
 
 
 		int s3Time = F1TS_bestLapSector3TimeInMS(_currentPlayerCarId);
-		s = s3Time / 1000;
-		ms = s3Time % 1000;
-		sector3Text.text = "Sector 3: 00," + s.ToString("00") + "." + ms.ToString("000");
+		sector3Text.text = "Sector 3: " + FromTimeToStringFormat(s3Time);
+	}
+	
+	private String FromTimeToStringFormat(int time)
+	{            
+		int m = time / 60000;
+		int secMill = (time - m * 60000);
+		int s = secMill / 1000;
+		int ms = secMill % 1000;
+		return m.ToString("00") + "," + s.ToString("00") + "." + ms.ToString("000");
 	}
 
 	public override void OnPlayerCarIdChanged(byte playerCarId)

@@ -92,9 +92,12 @@ public class EventManager : MonoBehaviour
         if (F1TS_numActiveCars() != _numActiveCars)
         {
             _numActiveCars = F1TS_numActiveCars();
-            foreach (TelemetryListener tl in _listeners)
-                tl.OnNumActiveCarsChange(_numActiveCars);
-            
+            if (_numActiveCars <= 22)
+            {
+                print("New car active: " + _numActiveCars);
+                foreach (TelemetryListener tl in _listeners)
+                    tl.OnNumActiveCarsChange(_numActiveCars);
+            }
         }
 
     }

@@ -59,23 +59,66 @@ public class LapManager : TelemetryListener
         //check overall lap and sector times
         for (byte i = 0; i < _numActiveCars; i++)
         {
-            int fastestCarLap = (int)(F1TS_bestLapTime(i) * 1000);
-            if (fastestCarLap < _fastestOverallLapTime)
-            {
-                fastestCarLap = _fastestOverallLapTime;
-                if (_fastestOverallLap != null)
-                {
-                    if(i != _currentPlayerCarId)
-                        _fastestOverallLap.SetLapColor(Manager.instance.colorPalette.PersonalBestTime);
-                    else
-                        _fastestOverallLap.SetLapColor(Manager.instance.colorPalette.NormalTime);
-                }
-                
-                fastestLapInfo.SetOverallFastestLap(fastestCarLap);
-            }
+            //update lap
+            CheckFastestOverallLap(i);
+            
+            //Update sectors
+            CheckFastestOverallSector(i, 1,  F1TS_bestOverallSector1TimeInMS(i),
+                ref _fastestOverallS1Time, _fastestOverallS1);
+            CheckFastestOverallSector(i, 2,  F1TS_bestOverallSector2TimeInMS(i),
+                ref _fastestOverallS2Time, _fastestOverallS2);
+            CheckFastestOverallSector(i, 3,  F1TS_bestOverallSector3TimeInMS(i),
+                ref _fastestOverallS3Time, _fastestOverallS3);
         }
     }
 
+    private void CheckFastestOverallLap(byte carId)
+    {
+        int carFastestLap = (int)(F1TS_bestLapTime(carId) * 1000);
+        if (carFastestLap <= 0)
+            return;
+        
+        if (carFastestLap < _fastestOverallLapTime)
+        {
+            _fastestOverallLapTime = carFastestLap;
+            if (_fastestOverallLap != null)
+            {
+                if (carId != _currentPlayerCarId)
+                    _fastestOverallLap.SetLapColor(Manager.instance.colorPalette.PersonalBestTime);
+                else
+                    _fastestOverallLap.SetLapColor(Manager.instance.colorPalette.NormalTime);
+            }
+
+            fastestLapInfo.SetOverallFastestLap(carFastestLap);
+        }
+    }
+
+    private void CheckFastestOverallSector(byte carId, byte sector, int carFastestSector,
+        ref int fastestOverallSectorTime, IndividualLap fastestOverallSector)
+    {
+        if (carFastestSector <= 0)
+            return;
+
+       
+        if (carFastestSector < fastestOverallSectorTime)
+        {
+            //print("NEW FASTEST SECTOR " + sector);
+            //print("Time:" + carFastestSector);
+            fastestOverallSectorTime = carFastestSector;
+            if (fastestOverallSector != null)
+            {
+                if (carId != _currentPlayerCarId)
+                    fastestOverallSector.SetLapColor(Manager.instance.colorPalette.PersonalBestTime);
+                else
+                    fastestOverallSector.SetLapColor(Manager.instance.colorPalette.NormalTime);
+            }
+            
+            fastestLapInfo.SetOverallFastestSector(sector, carFastestSector);
+            currentLapInfo.SetOverallFastestSector(sector, carFastestSector);
+        }
+        
+    }
+    
     public void NewLap(int time, int s1Time, int s2Time, int s3Time, int lapNum)
     {
         if (time == 0)
