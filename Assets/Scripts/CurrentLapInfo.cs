@@ -146,7 +146,10 @@ public class CurrentLapInfo : TelemetryListener
     private void ChangeSectorTextColor(TextMeshProUGUI text, int time, int personalBest)
     {
         if (time <= _overallBestS1)
+        {
             text.color = Manager.instance.colorPalette.OverallBestTime;
+            _overallBestS1 = time; //PROVISIONAL
+        }
         else if (time <= personalBest)
             text.color = Manager.instance.colorPalette.PersonalBestTime;
         else
@@ -161,6 +164,13 @@ public class CurrentLapInfo : TelemetryListener
         int ms = secMill % 1000;
         return m.ToString("00") + "," + s.ToString("00") + "." + ms.ToString("000");
     }
+
+
+
+    public void SetOverallFastestSector(int sector, int time)
+    {
+        
+    }
     
     
     public override void OnNewLap(int lap)
@@ -171,7 +181,7 @@ public class CurrentLapInfo : TelemetryListener
             lapManager.FastestPersonalSector(3, F1TS_bestOverallSector3TimeInMS(_currentPlayerCarId));
         
         
-        lapManager.NewLap(lastLapMili, _lastS1Time, _lastS2Time, lastS3, lap);
+        lapManager.NewLap(lastLapMili, _lastS1Time, _lastS2Time, lastS3, lap - 1);
 
         ResetTimes();
     }
@@ -181,5 +191,5 @@ public class CurrentLapInfo : TelemetryListener
         _currentPlayerCarId = playerCarId;
     }
 
-
+    
 }

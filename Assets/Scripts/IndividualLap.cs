@@ -52,22 +52,22 @@ public class IndividualLap : MonoBehaviour
         lapText.color = color;
     }
 
-    public void SetS1Color(Color color)
+    public void SetSectorColor(int sector, Color color)
     {
-        sector1Text.color = color;
-        
+        switch (sector)
+        {
+            case 1:
+                sector1Text.color = color;
+                break;
+            case 2:
+                sector2Text.color = color;
+                break;
+            case 3:
+                sector3Text.color = color;
+                break;
+        }
     }
     
-    public void SetS2Color(Color color)
-    {
-        sector2Text.color = color;
-        
-    }
-    
-    public void SetS3Color(Color color)
-    {
-        sector3Text.color = color;
-    }
     
     
     private String FromTimeToStringFormat(int time)

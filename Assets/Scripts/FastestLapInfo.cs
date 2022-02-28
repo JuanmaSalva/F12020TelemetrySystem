@@ -32,10 +32,12 @@ public class FastestLapInfo : TelemetryListener
 	public TextMeshProUGUI sector3Text;
 
 	
+	private int _overallBestLap = Int32.MaxValue;//taking into account all cars on track
 	private int _overallBestS1 = Int32.MaxValue; //taking into account all cars on track
 	private int _overallBestS2 = Int32.MaxValue; //taking into account all cars on track
 	private int _overallBestS3 = Int32.MaxValue; //taking into account all cars on track
 
+	private int _lapTime;
 	private int _s1Time;
 	private int _s2Time;
 	private int _s3Time;
@@ -69,26 +71,26 @@ public class FastestLapInfo : TelemetryListener
 		ushort s1Time = F1TS_bestLapSector1TimeInMS(_currentPlayerCarId);
 		if (s1Time != 0)
 		{
-			ChangeSectorTextColor(sector1Text, s1Time, 
+			ChangeTextColor(sector1Text, s1Time, 
 				F1TS_bestOverallSector1TimeInMS(_currentPlayerCarId), _overallBestS1);
 		}
 
 
 		ushort s2Time = F1TS_bestLapSector2TimeInMS(_currentPlayerCarId);
 		if(s2Time != 0){
-			ChangeSectorTextColor(sector2Text, s2Time, 
+			ChangeTextColor(sector2Text, s2Time, 
 				F1TS_bestOverallSector2TimeInMS(_currentPlayerCarId), _overallBestS2);
 		}
 
 		int s3Time = F1TS_bestLapSector3TimeInMS(_currentPlayerCarId);
 		if(s3Time != 0)
 		{
-			ChangeSectorTextColor(sector3Text, s3Time, 
+			ChangeTextColor(sector3Text, s3Time, 
 				F1TS_bestOverallSector3TimeInMS(_currentPlayerCarId), _overallBestS3);
 		}
 	}
 	
-	private void ChangeSectorTextColor(TextMeshProUGUI text, int time, int personalBest, int overallBest)
+	private void ChangeTextColor(TextMeshProUGUI text, int time, int personalBest, int overallBest)
 	{
 		if (time <= overallBest)
 			text.color = Manager.instance.colorPalette.OverallBestTime;
@@ -98,12 +100,31 @@ public class FastestLapInfo : TelemetryListener
 			text.color = Manager.instance.colorPalette.NormalTime;
 	}
 
+	
+	
+	
+	public void SetOverallFastestSector(int sector, int time)
+	{
+        
+	}
+	
+	public void SetOverallFastestLap(int time)
+	{
+		_overallBestLap = time;
+		ChangeTextColor(fastestLapText, _lapTime, _lapTime, _overallBestLap);
+	}
+	
+	
 	public override void OnFastestLap(float time)
 	{
+		if (time <= 0)
+			return;
+		
 		int s, ms;
 
 		//Lap time
 		int currentLapMili = (int)(time * 1000);
+		_lapTime = currentLapMili;
 		if (currentLapMili != 0.0)
 		{
 			int m = currentLapMili / 60000;
