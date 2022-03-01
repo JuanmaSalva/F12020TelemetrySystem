@@ -116,12 +116,13 @@ public class LapManager : TelemetryListener
             fastestLapInfo.SetOverallFastestSector(sector, carFastestSector);
             currentLapInfo.SetOverallFastestSector(sector, carFastestSector);
         }
-        
     }
+    
     
     public void NewLap(int time, int s1Time, int s2Time, int s3Time, int lapNum)
     {
-        if (time == 0)
+        //invalid lap (not a completed lap)
+        if (time == 0 || s1Time == 0 || s2Time == 0 || s3Time == 0)
             return;
         
         IndividualLap individualLap = Instantiate(IndividualLapPrefab, IndividualLapParent).GetComponent<IndividualLap>();
@@ -130,25 +131,72 @@ public class LapManager : TelemetryListener
         
         if (time <= _fastestPersonalLapTime)
         {
+            if(_fastestPersonalLap != null)
+                _fastestPersonalLap.SetLapColor(Manager.instance.colorPalette.NormalTime);
+            _fastestPersonalLapTime = time;
             _fastestPersonalLap = individualLap;
             _fastestPersonalLap.SetLapColor(Manager.instance.colorPalette.PersonalBestTime);
+            
+            if (time <= _fastestOverallLapTime)
+            {
+                if(_fastestOverallLap != null)
+                    _fastestOverallLap.SetLapColor(Manager.instance.colorPalette.NormalTime);
+                _fastestOverallLapTime = time;
+                _fastestOverallLap = individualLap;
+                _fastestOverallLap.SetLapColor(Manager.instance.colorPalette.OverallBestTime);
+            }
         }
         if (s1Time <= _fastestPersonalS1Time)
         {
+            if(_fastestPersonalS1 != null)
+                _fastestPersonalS1.SetSectorColor(1, Manager.instance.colorPalette.NormalTime);
             _fastestPersonalS1 = individualLap;
             _fastestPersonalS1.SetSectorColor(1, Manager.instance.colorPalette.PersonalBestTime);
+            _fastestPersonalS1Time = s1Time;
+            
+            if (s1Time <= _fastestOverallS1Time)
+            {
+                if(_fastestOverallS1 != null)
+                    _fastestOverallS1.SetSectorColor(1, Manager.instance.colorPalette.NormalTime);
+                _fastestOverallS1Time = s1Time;
+                _fastestOverallS1 = individualLap;
+                _fastestOverallS1.SetSectorColor(1, Manager.instance.colorPalette.OverallBestTime);
+            }
         }
         if (s2Time <= _fastestPersonalS2Time)
         {
+            if(_fastestPersonalS2 != null)
+                _fastestPersonalS2.SetSectorColor(2, Manager.instance.colorPalette.NormalTime);
             _fastestPersonalS2 = individualLap;
             _fastestPersonalS2.SetSectorColor(2, Manager.instance.colorPalette.PersonalBestTime);
+            _fastestPersonalS2Time = s2Time;
+            
+            if (s2Time <= _fastestOverallS2Time)
+            {
+                if(_fastestOverallS2 != null)
+                    _fastestOverallS2.SetSectorColor(2, Manager.instance.colorPalette.NormalTime);
+                _fastestOverallS2Time = s2Time;
+                _fastestOverallS2 = individualLap;
+                _fastestOverallS2.SetSectorColor(2, Manager.instance.colorPalette.OverallBestTime);
+            }
         }
         if (s3Time <= _fastestPersonalS3Time)
         {
+            if(_fastestPersonalS3 != null)
+                _fastestPersonalS3.SetSectorColor(3, Manager.instance.colorPalette.NormalTime);
             _fastestPersonalS3 = individualLap;
             _fastestPersonalS3.SetSectorColor(3, Manager.instance.colorPalette.PersonalBestTime);
+            _fastestPersonalS3Time = s3Time;
+            
+            if (s3Time <= _fastestOverallS3Time)
+            {
+                if(_fastestOverallS3 != null)
+                    _fastestOverallS3.SetSectorColor(3, Manager.instance.colorPalette.NormalTime);
+                _fastestOverallS3Time = s3Time;
+                _fastestOverallS3 = individualLap;
+                _fastestOverallS3.SetSectorColor(3, Manager.instance.colorPalette.OverallBestTime);
+            }
         }
-        //TODO a lo mejor hay q poner aqui otra condicion para cuando es el tiempo más rápido general y que no parpadea verde entre medio
     }
 
     
@@ -160,6 +208,8 @@ public class LapManager : TelemetryListener
         
         if (sector == 1)
         {
+            if (time == _fastestPersonalS1Time)
+                return;
             UpdateSector(sector, time, ref _fastestPersonalS1Time, ref _fastestOverallS1Time,
                 _fastestPersonalS1, _fastestOverallS1);
         }

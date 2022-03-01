@@ -15,7 +15,7 @@ public class IndividualLap : MonoBehaviour
 
     public int lapTime, s1Time, s2Time, s3Time;
     
-    void Start()
+    void Awake()
     {
         lapTextTitle.color = Manager.instance.colorPalette.PanelTitle;
         lapText.color = Manager.instance.colorPalette.NormalTime;

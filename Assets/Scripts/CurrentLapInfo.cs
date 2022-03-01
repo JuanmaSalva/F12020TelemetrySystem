@@ -115,6 +115,7 @@ public class CurrentLapInfo : TelemetryListener
         sector1Text.text = "Sector 1: " + FromTimeToStringFormat(s1Time);
         _lastS1Time = s1Time;
         
+        //TODO esto se llamará cada frame del segundo sector, poner un mejor ultimo tiempo o algo así para q solo se llame una vez
         if (_lastS1Time <= F1TS_bestOverallSector1TimeInMS(_currentPlayerCarId))
             lapManager.FastestPersonalSector(1, F1TS_bestOverallSector1TimeInMS(_currentPlayerCarId));
         
@@ -140,8 +141,8 @@ public class CurrentLapInfo : TelemetryListener
         sector3Text.text = "Sector 3: " + FromTimeToStringFormat(s3Time);
         
         _lastS2Time = s2Time;
-        if (_lastS2Time <= F1TS_bestOverallSector2TimeInMS(_currentPlayerCarId))
-            lapManager.FastestPersonalSector(2, F1TS_bestOverallSector2TimeInMS(_currentPlayerCarId));
+        // if (_lastS2Time <= F1TS_bestOverallSector2TimeInMS(_currentPlayerCarId))
+        //     lapManager.FastestPersonalSector(2, F1TS_bestOverallSector2TimeInMS(_currentPlayerCarId));
         
         ChangeSectorTextColor(sector2Text, _lastS2Time, F1TS_bestOverallSector2TimeInMS(_currentPlayerCarId), _overallBestS2);
     }
@@ -195,8 +196,8 @@ public class CurrentLapInfo : TelemetryListener
             return;
         
         int lastS3 = lastLapMili - _lastS1Time - _lastS2Time;
-        if (lastS3 <= F1TS_bestOverallSector3TimeInMS(_currentPlayerCarId))
-            lapManager.FastestPersonalSector(3, F1TS_bestOverallSector3TimeInMS(_currentPlayerCarId));
+        // if (lastS3 <= F1TS_bestOverallSector3TimeInMS(_currentPlayerCarId))
+        //     lapManager.FastestPersonalSector(3, F1TS_bestOverallSector3TimeInMS(_currentPlayerCarId));
 
         ChangeSectorTextColor(sector3Text, lastS3, F1TS_bestOverallSector3TimeInMS(_currentPlayerCarId), _overallBestS3);
         
@@ -209,6 +210,4 @@ public class CurrentLapInfo : TelemetryListener
     {
         _currentPlayerCarId = playerCarId;
     }
-
-    
 }

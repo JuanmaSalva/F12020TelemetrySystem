@@ -121,7 +121,7 @@ public class FastestLapInfo : TelemetryListener
 	
 	public void SetOverallFastestLap(int time)
 	{
-		print("Ocerall fatest lap: " + time);
+		//print("Ocerall fatest lap: " + time);
 		_overallBestLap = time;
 		ChangeTextColor(fastestLapText, _lapTime, _lapTime, _overallBestLap);
 	}
@@ -134,16 +134,17 @@ public class FastestLapInfo : TelemetryListener
 		
 		//Lap time
 		int currentLapMili = (int)(time * 1000);
+		if (currentLapMili <= 0)
+			return;
 		_lapTime = currentLapMili;
-		if (currentLapMili != 0.0)
-		{
-			fastestLapText.text = "Lap: " + FromTimeToStringFormat(currentLapMili);
+		
+		fastestLapText.text = "Lap: " + FromTimeToStringFormat(currentLapMili);
 
-			if (time <= _overallBestLap)
-				fastestLapText.color = Manager.instance.colorPalette.OverallBestTime;
-			else
-				fastestLapText.color = Manager.instance.colorPalette.PersonalBestTime;
-		}
+		//TODO esto no haria falta
+		// if (time <= _overallBestLap)
+		// 	fastestLapText.color = Manager.instance.colorPalette.OverallBestTime;
+		// else
+		// 	fastestLapText.color = Manager.instance.colorPalette.PersonalBestTime;
 
 
 		ushort s1Time = F1TS_bestLapSector1TimeInMS(_currentPlayerCarId);

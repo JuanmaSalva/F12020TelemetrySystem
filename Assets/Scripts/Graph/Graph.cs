@@ -202,7 +202,7 @@ namespace F1TS
 
         public override void OnFastestLap(float time)
         {
-            Debug.Log("NEW FASTEST LAP, dale carla");
+            //Debug.Log("NEW FASTEST LAP, dale carla");
 
             List<UIVertex> v = new List<UIVertex>();
             List<Vector3Int> t = new List<Vector3Int>();
