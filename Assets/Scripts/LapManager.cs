@@ -45,6 +45,8 @@ public class LapManager : TelemetryListener
     private int _fastestOverallS2Time = Int32.MaxValue;
     private int _fastestOverallS3Time = Int32.MaxValue;
 
+    private int lastLapRegistered = -1;
+
     private byte _numActiveCars = 0;
     private byte _currentPlayerCarId = 0;
     
@@ -93,18 +95,18 @@ public class LapManager : TelemetryListener
         }
     }
 
-    private void CheckFastestOverallSector(byte carId, byte sector, int carFastestSector,
+    private void CheckFastestOverallSector(byte carId, byte sector, int carFastestSectorTime,
         ref int fastestOverallSectorTime, IndividualLap fastestOverallSector)
     {
-        if (carFastestSector <= 0)
+        if (carFastestSectorTime <= 0)
             return;
 
        
-        if (carFastestSector < fastestOverallSectorTime)
+        if (carFastestSectorTime < fastestOverallSectorTime)
         {
             //print("NEW FASTEST SECTOR " + sector);
             //print("Time:" + carFastestSector);
-            fastestOverallSectorTime = carFastestSector;
+            fastestOverallSectorTime = carFastestSectorTime;
             if (fastestOverallSector != null)
             {
                 if (carId != _currentPlayerCarId)
@@ -113,17 +115,19 @@ public class LapManager : TelemetryListener
                     fastestOverallSector.SetLapColor(Manager.instance.colorPalette.NormalTime);
             }
             
-            fastestLapInfo.SetOverallFastestSector(sector, carFastestSector);
-            currentLapInfo.SetOverallFastestSector(sector, carFastestSector);
+            fastestLapInfo.SetOverallFastestSector(sector, carFastestSectorTime);
+            currentLapInfo.SetOverallFastestSector(sector, carFastestSectorTime);
         }
     }
     
     
     public void NewLap(int time, int s1Time, int s2Time, int s3Time, int lapNum)
     {
-        //invalid lap (not a completed lap)
-        if (time == 0 || s1Time == 0 || s2Time == 0 || s3Time == 0)
+        //invalid lap (not a completed lap or a repeated lap)
+        if (lapNum == lastLapRegistered || time == 0 || s1Time == 0 || s2Time == 0 || s3Time == 0)
             return;
+        lastLapRegistered = lapNum;
+        
         
         IndividualLap individualLap = Instantiate(IndividualLapPrefab, IndividualLapParent).GetComponent<IndividualLap>();
         individualLap.SetTime(time, s1Time, s2Time, s3Time, lapNum);

@@ -117,8 +117,7 @@ public class EventManager : MonoBehaviour
     {
         if(!_onLapStarted && F1TS_sector(_currentPlayerCarIndex) == 0)
         {
-            print("New lap");
-            print(F1TS_lastTimeLap(_currentPlayerCarIndex));
+            print("New lap: " + F1TS_lastTimeLap(_currentPlayerCarIndex));
             _currentLap = F1TS_currentLapNum(_currentPlayerCarIndex);
             _onLapStarted = true;
             return true;
@@ -139,7 +138,7 @@ public class EventManager : MonoBehaviour
 
     bool CheckFastestLap()
     {
-        if(F1TS_lastTimeLap(_currentPlayerCarIndex) < _bestLapTime && F1TS_lastTimeLap(_currentPlayerCarIndex) >= 30) //30 = min seconds for a timed lap
+        if(F1TS_lastTimeLap(_currentPlayerCarIndex) <= _bestLapTime && F1TS_lastTimeLap(_currentPlayerCarIndex) >= 30) //30 = min seconds for a timed lap
         {
             _bestLapTime = F1TS_lastTimeLap(_currentPlayerCarIndex);
             return true;

@@ -121,9 +121,12 @@ public class FastestLapInfo : TelemetryListener
 	
 	public void SetOverallFastestLap(int time)
 	{
-		//print("Ocerall fatest lap: " + time);
+		print("Overall fatest lap: " + time);
 		_overallBestLap = time;
-		ChangeTextColor(fastestLapText, _lapTime, _lapTime, _overallBestLap);
+		fastestLapText.text = "Lap: " + FromTimeToStringFormat(time);
+		ChangeTextColor(fastestLapText, (int)(F1TS_bestLapTime(_currentPlayerCarId) * 1000), 
+			(int)(F1TS_bestLapTime(_currentPlayerCarId) * 1000), _overallBestLap);
+		OnFastestLap(time);
 	}
 	
 	
@@ -138,7 +141,7 @@ public class FastestLapInfo : TelemetryListener
 			return;
 		_lapTime = currentLapMili;
 		
-		fastestLapText.text = "Lap: " + FromTimeToStringFormat(currentLapMili);
+		//fastestLapText.text = "Lap: " + FromTimeToStringFormat(currentLapMili);
 
 		//TODO esto no haria falta
 		// if (time <= _overallBestLap)

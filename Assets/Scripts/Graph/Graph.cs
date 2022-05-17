@@ -224,7 +224,10 @@ namespace F1TS
         private void SaveAndShowFastestLap(LapGraphData lapGraphData)
         {
             //LapGraphData aux = lapGraphData as LapGraphData;
-            SaveSystem.SaveObject("SavedLapTrack" + trackId.ToString() + ".track", lapGraphData);
+            Thread saveThread = new Thread(
+                () => SaveSystem.SaveObject("SavedLapTrack" + trackId.ToString() + ".track", lapGraphData));
+            saveThread.Start();
+            
             staticBestLapGraph.PlotGraph(lapGraphData.GetVertecies(), lapGraphData.GetTriangles(), Manager.instance.colorPalette.GraphBestLap);
         }
 
