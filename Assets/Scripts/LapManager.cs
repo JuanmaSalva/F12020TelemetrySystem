@@ -38,15 +38,19 @@ public class LapManager : TelemetryListener
     private byte _numActiveCars = 0;
     private byte _currentPlayerCarId = 0;
 
-    public List<LapListener> _lapListeners;
+    public List<ILapListener> _lapListeners;
 
     
     //---------UNITY FUNCTIONS---------
+    private void Awake()
+    {
+        _lapListeners = new List<ILapListener>();
+    }
+
     void Start()
     {
         EventManager.instance.AddListener(this);
         Manager.instance.AddGameObjectDependantFromF1TS(this.gameObject);
-        _lapListeners = new List<LapListener>();
     }
 
     void Update()
@@ -58,11 +62,11 @@ public class LapManager : TelemetryListener
             CheckFastestLap(i);
             
             //Update sectors
-            CheckFastestOverallSector(i, 1,  F1TS_bestOverallSector1TimeInMS(i),
+            CheckFastestOverallSector(i, 0,  F1TS_bestOverallSector1TimeInMS(i),
                 ref _fastestOverallS1Time, ref _fastestPersonalS1Time);
-            CheckFastestOverallSector(i, 2,  F1TS_bestOverallSector2TimeInMS(i),
+            CheckFastestOverallSector(i, 1,  F1TS_bestOverallSector2TimeInMS(i),
                 ref _fastestOverallS2Time, ref _fastestPersonalS2Time);
-            CheckFastestOverallSector(i, 3,  F1TS_bestOverallSector3TimeInMS(i),
+            CheckFastestOverallSector(i, 2,  F1TS_bestOverallSector3TimeInMS(i),
                 ref _fastestOverallS3Time, ref _fastestPersonalS3Time);
         }
     }
@@ -79,14 +83,14 @@ public class LapManager : TelemetryListener
         if (carFastestLap < _fastestOverallLapTime)
         {
             _fastestOverallLapTime = carFastestLap;
-            foreach (LapListener lapListener in _lapListeners)
+            foreach (ILapListener lapListener in _lapListeners)
                 lapListener.OnFastestLap(carFastestLap, carId == _currentPlayerCarId);
         }
         //Fastest personal time
-        else if (carFastestLap < _fastestPersonalLapTime)
+        if (carId == _currentPlayerCarId && carFastestLap < _fastestPersonalLapTime)
         {
             _fastestPersonalLapTime = carFastestLap;
-            foreach (LapListener lapListener in _lapListeners)
+            foreach (ILapListener lapListener in _lapListeners)
                 lapListener.OnFastestLap(carFastestLap, carId == _currentPlayerCarId);
         }
     }
@@ -102,19 +106,20 @@ public class LapManager : TelemetryListener
         if (carFastestSectorTime < fastestOverallSectorTime)
         {
             fastestOverallSectorTime = carFastestSectorTime;
-            foreach (LapListener lapListener in _lapListeners)
+            foreach (ILapListener lapListener in _lapListeners)
                 lapListener.OnFastestSector(carFastestSectorTime, sector, carId == _currentPlayerCarId);
         }
         //Fastest personal time
-        else if (carFastestSectorTime < fastestPersonalSectorTime)
+        if (carId == _currentPlayerCarId && carFastestSectorTime < fastestPersonalSectorTime)
         {
             fastestPersonalSectorTime = carFastestSectorTime;
-            foreach (LapListener lapListener in _lapListeners)
+            foreach (ILapListener lapListener in _lapListeners)
                 lapListener.OnFastestSector(carFastestSectorTime, sector, carId == _currentPlayerCarId);
         }
     }
     
     
+    //---------PUBLIC---------
     public void NewLap(int time, int s1Time, int s2Time, int s3Time, int lapNum)
     {
         //invalid lap (not a completed lap or a repeated lap)
@@ -127,6 +132,10 @@ public class LapManager : TelemetryListener
         individualLap.SetTime(time, s1Time, s2Time, s3Time, lapNum);
     }
 
+    public void AddLapListener(ILapListener lapListener)
+    {
+        _lapListeners.Add(lapListener);
+    }
 
 
     //---------TELEMETRY LISTENERS FUNCTIONS---------
@@ -139,5 +148,43 @@ public class LapManager : TelemetryListener
     {
         _currentPlayerCarId = playerCarId;
     }
+    
 
+    //---------GETTERS---------
+    
+    //Overall
+    public int GetOverallFastestLap()
+    {
+        return _fastestOverallLapTime;
+    }
+    public int GetOverallFastestSector1()
+    {
+        return _fastestOverallS1Time;
+    }
+    public int GetOverallFastestSector2()
+    {
+        return _fastestOverallS2Time;
+    }
+    public int GetOverallFastestSector3()
+    {
+        return _fastestOverallS3Time;
+    }
+    
+    //Personal
+    public int GetPersonalFastestLap()
+    {
+        return _fastestPersonalLapTime;
+    }
+    public int GetPersonalFastestSector1()
+    {
+        return _fastestPersonalS1Time;
+    }
+    public int GetPersonalFastestSector2()
+    {
+        return _fastestPersonalS2Time;
+    }
+    public int GetPersonalFastestSector3()
+    {
+        return _fastestPersonalS3Time;
+    }
 }

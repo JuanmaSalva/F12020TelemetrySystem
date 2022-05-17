@@ -2,9 +2,10 @@ using System;
 using System.Runtime.InteropServices;
 using TMPro;
 
-public class CurrentLapInfo : TelemetryListener, LapListener
+public class CurrentLapInfo : TelemetryListener, ILapListener
 {
- [DllImport("F12020Telemetry")]
+    //---------TELEMETRY SYSTEM DECLARATIONS---------
+    [DllImport("F12020Telemetry")]
     private static extern float F1TS_currentLapTime(byte id);
     [DllImport("F12020Telemetry")]
     private static extern ushort F1TS_sector1(byte carId);
@@ -23,6 +24,7 @@ public class CurrentLapInfo : TelemetryListener, LapListener
     [DllImport("F12020Telemetry")]
     private static extern ushort F1TS_bestOverallSector3TimeInMS(byte carId);
 
+    //---------VARIABLES---------
     public TextMeshProUGUI currentLapText;
     public TextMeshProUGUI sector1Text;
     public TextMeshProUGUI sector2Text;
@@ -30,13 +32,6 @@ public class CurrentLapInfo : TelemetryListener, LapListener
 
     public LapManager lapManager;
 
-    private int _s1Time;
-    private int _s2Time;
-    private int _s3Time;
-    
-    private int _overallBestS1 = Int32.MaxValue; //taking into account all cars on track
-    private int _overallBestS2 = Int32.MaxValue; //taking into account all cars on track
-    private int _overallBestS3 = Int32.MaxValue; //taking into account all cars on track
 
     private int _lastS1Time;
     private int _lastS2Time;
@@ -44,25 +39,14 @@ public class CurrentLapInfo : TelemetryListener, LapListener
     private byte _currentPlayerCarId = 0;
     
     
+    //---------UNITY FUNCTIONS---------
     void Start()
     {
         Manager.instance.AddGameObjectDependantFromF1TS(this.gameObject);
         EventManager.instance.AddListener(this);
+        lapManager.AddLapListener(this);
 
         ResetTimes();
-    }
-
-    private void ResetTimes()
-    {
-        currentLapText.text = "Lap: 00,00.000";
-        sector1Text.text = "Sector 1: 00,00.000";
-        sector2Text.text = "Sector 2: 00,00.000";
-        sector3Text.text = "Sector 3: 00,00.000";
-        
-        currentLapText.color = Manager.instance.colorPalette.NormalTime;
-        sector1Text.color = Manager.instance.colorPalette.NormalTime;
-        sector2Text.color = Manager.instance.colorPalette.NormalTime;
-        sector3Text.color = Manager.instance.colorPalette.NormalTime;
     }
     
     
@@ -86,6 +70,22 @@ public class CurrentLapInfo : TelemetryListener, LapListener
             Sector3(currentLapMili);
         }
     }
+    
+    
+    //---------PRIVATE---------
+    private void ResetTimes()
+    {
+        currentLapText.text = "Lap: 00,00.000";
+        sector1Text.text = "Sector 1: 00,00.000";
+        sector2Text.text = "Sector 2: 00,00.000";
+        sector3Text.text = "Sector 3: 00,00.000";
+        
+        currentLapText.color = Manager.instance.colorPalette.NormalTime;
+        sector1Text.color = Manager.instance.colorPalette.NormalTime;
+        sector2Text.color = Manager.instance.colorPalette.NormalTime;
+        sector3Text.color = Manager.instance.colorPalette.NormalTime;
+    }
+    
 
     private void UpdateCurrentLapText(int currentLapMili)
     {
@@ -108,12 +108,14 @@ public class CurrentLapInfo : TelemetryListener, LapListener
     private void Sector2(int currentLapMili)
     {
         ushort s1Time = F1TS_sector1(_currentPlayerCarId);
-        sector1Text.text = "Sector 1: " + FromTimeToStringFormat(s1Time);
-        _lastS1Time = s1Time;
+        if (s1Time != _lastS1Time) //updates text and color
+        {
+            sector1Text.text = "Sector 1: " + FromTimeToStringFormat(s1Time);
+            _lastS1Time = s1Time;
+            ChangeSectorTextColor(sector1Text, _lastS1Time, lapManager.GetPersonalFastestSector1(),
+                lapManager.GetOverallFastestSector1());
+        }
         
-        
-        ChangeSectorTextColor(sector1Text, _lastS1Time, F1TS_bestOverallSector1TimeInMS(_currentPlayerCarId), _overallBestS1);
-
         int s2Time = currentLapMili - s1Time;
         sector2Text.text = "Sector 2: " + FromTimeToStringFormat(s2Time);
     }
@@ -124,22 +126,24 @@ public class CurrentLapInfo : TelemetryListener, LapListener
         sector1Text.text = "Sector 1: " + FromTimeToStringFormat(s1Time);
 
         ushort s2Time = F1TS_sector2(_currentPlayerCarId);
-        sector2Text.text = "Sector 2: " + FromTimeToStringFormat(s2Time);
-
         if (s2Time <= 0)
             return;
+
+        if (_lastS2Time != s2Time)
+        {
+            sector2Text.text = "Sector 2: " + FromTimeToStringFormat(s2Time);
+            _lastS2Time = s2Time;
+            ChangeSectorTextColor(sector2Text, _lastS2Time, lapManager.GetPersonalFastestSector2(),
+                lapManager.GetOverallFastestSector2());
+        }
+
         
         int s3Time = currentLapMili - s1Time - s2Time;
         sector3Text.text = "Sector 3: " + FromTimeToStringFormat(s3Time);
         
-        _lastS2Time = s2Time;
-        // if (_lastS2Time <= F1TS_bestOverallSector2TimeInMS(_currentPlayerCarId))
-        //     lapManager.FastestPersonalSector(2, F1TS_bestOverallSector2TimeInMS(_currentPlayerCarId));
         
-        ChangeSectorTextColor(sector2Text, _lastS2Time, F1TS_bestOverallSector2TimeInMS(_currentPlayerCarId), _overallBestS2);
     }
 
-    
     private void ChangeSectorTextColor(TextMeshProUGUI text, int time, int personalBest, int overallBest)
     {
         if (time <= overallBest)
@@ -162,37 +166,18 @@ public class CurrentLapInfo : TelemetryListener, LapListener
     }
 
 
-
-    public void SetOverallFastestSector(int sector, int time)
-    {
-        //TODO down grade the color
-        switch (sector)
-        {
-            case 1:
-                _overallBestS1 = time;
-                break;
-            case 2:
-                _overallBestS2 = time;
-                break;
-            case 3:
-                _overallBestS3 = time;
-                break;
-        }
-    }
     
     
+    
+    //---------LISTENER FUNCTIONS---------
     public override void OnNewLap(int lap)
     {
+        //This needs to be here because we need the sector 1 and sector 2 times 
         int lastLapMili = (int)(F1TS_lastTimeLap(_currentPlayerCarId) * 1000);
         if (lastLapMili <= 0)
             return;
         
         int lastS3 = lastLapMili - _lastS1Time - _lastS2Time;
-        // if (lastS3 <= F1TS_bestOverallSector3TimeInMS(_currentPlayerCarId))
-        //     lapManager.FastestPersonalSector(3, F1TS_bestOverallSector3TimeInMS(_currentPlayerCarId));
-
-        ChangeSectorTextColor(sector3Text, lastS3, F1TS_bestOverallSector3TimeInMS(_currentPlayerCarId), _overallBestS3);
-        
         lapManager.NewLap(lastLapMili, _lastS1Time, _lastS2Time, lastS3, lap - 1);
 
         ResetTimes();
@@ -203,4 +188,20 @@ public class CurrentLapInfo : TelemetryListener, LapListener
         _currentPlayerCarId = playerCarId;
     }
 
+    
+    //TODO se deberia llamar en una carrera
+    public void OnFastestSector(int time, int sector, bool personal)
+    {
+        print("Fastest sector");
+        if (sector == 0 && time <= _lastS1Time)
+        {
+            ChangeSectorTextColor(sector1Text, _lastS1Time, lapManager.GetPersonalFastestSector1(),
+                lapManager.GetOverallFastestSector1());
+        }
+        else if (sector == 1 && time <= _lastS2Time)
+        {
+            ChangeSectorTextColor(sector2Text, _lastS2Time, lapManager.GetPersonalFastestSector2(),
+                lapManager.GetOverallFastestSector2());
+        }
+    }
 }

@@ -138,7 +138,8 @@ public class EventManager : MonoBehaviour
 
     bool CheckFastestLap()
     {
-        if(F1TS_lastTimeLap(_currentPlayerCarIndex) <= _bestLapTime && F1TS_lastTimeLap(_currentPlayerCarIndex) >= 30) //30 = min seconds for a timed lap
+        if(F1TS_lastTimeLap(_currentPlayerCarIndex) <= F1TS_bestLapTime(_currentPlayerCarIndex) &&
+           F1TS_lastTimeLap(_currentPlayerCarIndex) >= 30) //30 = min seconds for a timed lap
         {
             _bestLapTime = F1TS_lastTimeLap(_currentPlayerCarIndex);
             return true;

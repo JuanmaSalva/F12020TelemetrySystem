@@ -2,7 +2,7 @@ using System;
 using System.Runtime.InteropServices;
 using TMPro;
 
-public class FastestLapInfo : TelemetryListener
+public class FastestLapInfo : TelemetryListener, ILapListener
 {
 	[DllImport("F12020Telemetry")]
 	private static extern float F1TS_bestLapTime(byte id);
@@ -30,13 +30,7 @@ public class FastestLapInfo : TelemetryListener
 	public TextMeshProUGUI sector1Text;
 	public TextMeshProUGUI sector2Text;
 	public TextMeshProUGUI sector3Text;
-
 	
-	private int _overallBestLap = Int32.MaxValue;//taking into account all cars on track
-	private int _overallBestS1 = Int32.MaxValue; //taking into account all cars on track
-	private int _overallBestS2 = Int32.MaxValue; //taking into account all cars on track
-	private int _overallBestS3 = Int32.MaxValue; //taking into account all cars on track
-
 	private int _lapTime = Int32.MaxValue;
 	private int _s1Time;
 	private int _s2Time;
@@ -44,11 +38,13 @@ public class FastestLapInfo : TelemetryListener
 
 	private byte _currentPlayerCarId = 0;
 
+	public LapManager lapManager;
 
 	void Start()
 	{
 		Manager.instance.AddGameObjectDependantFromF1TS(this.gameObject);
 		EventManager.instance.AddListener(this);
+		lapManager.AddLapListener(this);
 
 		fastestLapText.color = Manager.instance.colorPalette.NormalTime;
 		sector1Text.color = Manager.instance.colorPalette.NormalTime;
@@ -65,73 +61,12 @@ public class FastestLapInfo : TelemetryListener
 		sector2Text.text = "Sector 2: 00,00.000";
 		sector3Text.text = "Sector 3: 00,00.000";
 	}
-
-	private void Update()
-	{
-		ushort s1Time = F1TS_bestLapSector1TimeInMS(_currentPlayerCarId);
-		if (s1Time != 0)
-		{
-			ChangeTextColor(sector1Text, s1Time, 
-				F1TS_bestOverallSector1TimeInMS(_currentPlayerCarId), _overallBestS1);
-		}
-
-
-		ushort s2Time = F1TS_bestLapSector2TimeInMS(_currentPlayerCarId);
-		if(s2Time != 0){
-			ChangeTextColor(sector2Text, s2Time, 
-				F1TS_bestOverallSector2TimeInMS(_currentPlayerCarId), _overallBestS2);
-		}
-
-		int s3Time = F1TS_bestLapSector3TimeInMS(_currentPlayerCarId);
-		if(s3Time != 0)
-		{
-			ChangeTextColor(sector3Text, s3Time, 
-				F1TS_bestOverallSector3TimeInMS(_currentPlayerCarId), _overallBestS3);
-		}
-	}
 	
-	private void ChangeTextColor(TextMeshProUGUI text, int time, int personalBest, int overallBest)
-	{
-		if (time <= overallBest)
-			text.color = Manager.instance.colorPalette.OverallBestTime;
-		else if (time <= personalBest)
-			text.color = Manager.instance.colorPalette.PersonalBestTime;
-		else
-			text.color = Manager.instance.colorPalette.NormalTime;
-	}
 
 	
-	
-	
-	public void SetOverallFastestSector(int sector, int time)
+	public override void OnFastestLap(float time) //fastest personal lap
 	{
-		switch (sector)
-		{
-			case 1:
-				_overallBestS1 = time;
-				break;
-			case 2:
-				_overallBestS2 = time;
-				break;
-			case 3:
-				_overallBestS3 = time;
-				break;
-		}
-	}
-	
-	public void SetOverallFastestLap(int time)
-	{
-		print("Overall fatest lap: " + time);
-		_overallBestLap = time;
-		fastestLapText.text = "Lap: " + FromTimeToStringFormat(time);
-		ChangeTextColor(fastestLapText, (int)(F1TS_bestLapTime(_currentPlayerCarId) * 1000), 
-			(int)(F1TS_bestLapTime(_currentPlayerCarId) * 1000), _overallBestLap);
-		OnFastestLap(time);
-	}
-	
-	
-	public override void OnFastestLap(float time)
-	{
+		print("FASTEST LAP ");
 		if (time <= 0)
 			return;
 		
@@ -140,15 +75,8 @@ public class FastestLapInfo : TelemetryListener
 		if (currentLapMili <= 0)
 			return;
 		_lapTime = currentLapMili;
-		
-		//fastestLapText.text = "Lap: " + FromTimeToStringFormat(currentLapMili);
 
-		//TODO esto no haria falta
-		// if (time <= _overallBestLap)
-		// 	fastestLapText.color = Manager.instance.colorPalette.OverallBestTime;
-		// else
-		// 	fastestLapText.color = Manager.instance.colorPalette.PersonalBestTime;
-
+		fastestLapText.text = "Lap: " + FromTimeToStringFormat(_lapTime);
 
 		ushort s1Time = F1TS_bestLapSector1TimeInMS(_currentPlayerCarId);
 		sector1Text.text = "Sector 1: " + FromTimeToStringFormat(s1Time);
@@ -160,7 +88,30 @@ public class FastestLapInfo : TelemetryListener
 
 		int s3Time = F1TS_bestLapSector3TimeInMS(_currentPlayerCarId);
 		sector3Text.text = "Sector 3: " + FromTimeToStringFormat(s3Time);
+		
+		//Change text colors
+		ChangeTextColor(fastestLapText, _lapTime, lapManager.GetOverallFastestLap(),
+			lapManager.GetPersonalFastestLap());
+		ChangeTextColor(sector1Text, s1Time, lapManager.GetOverallFastestSector1(),
+			lapManager.GetPersonalFastestSector1());
+		ChangeTextColor(sector2Text, s2Time, lapManager.GetOverallFastestSector2(),
+			lapManager.GetPersonalFastestSector2());
+		ChangeTextColor(sector3Text, s3Time, lapManager.GetOverallFastestSector3(),
+			lapManager.GetPersonalFastestSector3());
+		
 	}
+	
+	
+	private void ChangeTextColor(TextMeshProUGUI text, int time, int personalBest, int overallBest)
+	{
+		if (time <= overallBest)
+			text.color = Manager.instance.colorPalette.OverallBestTime;
+		else if (time <= personalBest)
+			text.color = Manager.instance.colorPalette.PersonalBestTime;
+		else
+			text.color = Manager.instance.colorPalette.NormalTime;
+	}
+	
 	
 	private String FromTimeToStringFormat(int time)
 	{            
@@ -174,5 +125,37 @@ public class FastestLapInfo : TelemetryListener
 	public override void OnPlayerCarIdChanged(byte playerCarId)
 	{
 		_currentPlayerCarId = playerCarId;
+	}
+
+
+	public void OnFastestLap(int time, bool personal)
+	{
+		if (!personal)
+			return;
+		
+		ChangeTextColor(fastestLapText, _lapTime, lapManager.GetOverallFastestLap(),
+			lapManager.GetPersonalFastestLap());
+	}
+
+	public void OnFastestSector(int time, int sector, bool personal)
+	{
+		if (!personal || _lapTime == Int32.MaxValue)
+			return;
+
+		if (sector == 0)
+		{
+			ChangeTextColor(sector1Text, time, lapManager.GetPersonalFastestSector1(), 
+				lapManager.GetOverallFastestSector1());
+		}
+		else if (sector == 1)
+		{
+			ChangeTextColor(sector2Text, time, lapManager.GetPersonalFastestSector2(),
+				lapManager.GetOverallFastestSector2());
+		}
+		else if (sector == 2)
+		{
+			ChangeTextColor(sector3Text, time, lapManager.GetPersonalFastestSector3(),
+				lapManager.GetOverallFastestSector3());
+		}
 	}
 }
