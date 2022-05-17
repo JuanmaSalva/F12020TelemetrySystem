@@ -13165,8 +13165,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   IndividualLapPrefab: {fileID: 5549363102000660711, guid: 6f3088b774b0bdb479fc782db208657b, type: 3}
   IndividualLapParent: {fileID: 335582672}
-  currentLapInfo: {fileID: 372517791}
-  fastestLapInfo: {fileID: 1721428796}
 --- !u!1 &1991065131
 GameObject:
   m_ObjectHideFlags: 0

@@ -2,7 +2,7 @@ using System;
 using System.Runtime.InteropServices;
 using TMPro;
 
-public class CurrentLapInfo : TelemetryListener
+public class CurrentLapInfo : TelemetryListener, LapListener
 {
  [DllImport("F12020Telemetry")]
     private static extern float F1TS_currentLapTime(byte id);
@@ -33,10 +33,6 @@ public class CurrentLapInfo : TelemetryListener
     private int _s1Time;
     private int _s2Time;
     private int _s3Time;
-
-    //private int _sessionPersonalBestS1 = Int32.MaxValue;
-    //private int _sessionPersonalBestS2= Int32.MaxValue;
-    //private int _sessionPersonalBestS3= Int32.MaxValue;
     
     private int _overallBestS1 = Int32.MaxValue; //taking into account all cars on track
     private int _overallBestS2 = Int32.MaxValue; //taking into account all cars on track
@@ -114,10 +110,6 @@ public class CurrentLapInfo : TelemetryListener
         ushort s1Time = F1TS_sector1(_currentPlayerCarId);
         sector1Text.text = "Sector 1: " + FromTimeToStringFormat(s1Time);
         _lastS1Time = s1Time;
-        
-        //TODO esto se llamará cada frame del segundo sector, poner un mejor ultimo tiempo o algo así para q solo se llame una vez
-        if (_lastS1Time <= F1TS_bestOverallSector1TimeInMS(_currentPlayerCarId))
-            lapManager.FastestPersonalSector(1, F1TS_bestOverallSector1TimeInMS(_currentPlayerCarId));
         
         
         ChangeSectorTextColor(sector1Text, _lastS1Time, F1TS_bestOverallSector1TimeInMS(_currentPlayerCarId), _overallBestS1);
@@ -210,4 +202,5 @@ public class CurrentLapInfo : TelemetryListener
     {
         _currentPlayerCarId = playerCarId;
     }
+
 }
