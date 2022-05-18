@@ -33,8 +33,8 @@ public class CurrentLapInfo : TelemetryListener, ILapListener
     public LapManager lapManager;
 
 
-    private int _lastS1Time;
-    private int _lastS2Time;
+    private int _lastS1Time = Int32.MaxValue;
+    private int _lastS2Time = Int32.MaxValue;
     
     private byte _currentPlayerCarId = 0;
     
@@ -84,6 +84,9 @@ public class CurrentLapInfo : TelemetryListener, ILapListener
         sector1Text.color = Manager.instance.colorPalette.NormalTime;
         sector2Text.color = Manager.instance.colorPalette.NormalTime;
         sector3Text.color = Manager.instance.colorPalette.NormalTime;
+        
+        _lastS1Time = Int32.MaxValue;
+        _lastS2Time = Int32.MaxValue;
     }
     
 
@@ -146,12 +149,13 @@ public class CurrentLapInfo : TelemetryListener, ILapListener
 
     private void ChangeSectorTextColor(TextMeshProUGUI text, int time, int personalBest, int overallBest)
     {
-        if (time <= overallBest)
+        if (time <= personalBest)
         {
-            text.color = Manager.instance.colorPalette.OverallBestTime;
+            if(time <= overallBest)
+                text.color = Manager.instance.colorPalette.OverallBestTime;
+            else 
+                text.color = Manager.instance.colorPalette.PersonalBestTime;
         }
-        else if (time <= personalBest)
-            text.color = Manager.instance.colorPalette.PersonalBestTime;
         else
             text.color = Manager.instance.colorPalette.NormalTime;
     }
@@ -189,18 +193,27 @@ public class CurrentLapInfo : TelemetryListener, ILapListener
     }
 
     
-    //TODO se deberia llamar en una carrera
     public void OnFastestSector(int time, int sector, bool personal)
     {
-        print("Fastest sector");
+        int aux;
         if (sector == 0 && time <= _lastS1Time)
         {
-            ChangeSectorTextColor(sector1Text, _lastS1Time, lapManager.GetPersonalFastestSector1(),
+            if (_lastS1Time == Int32.MaxValue)
+                return;
+            
+            aux = personal ? time : _lastS1Time;
+            
+            ChangeSectorTextColor(sector1Text, aux, lapManager.GetPersonalFastestSector1(),
                 lapManager.GetOverallFastestSector1());
         }
         else if (sector == 1 && time <= _lastS2Time)
         {
-            ChangeSectorTextColor(sector2Text, _lastS2Time, lapManager.GetPersonalFastestSector2(),
+            if (_lastS2Time == Int32.MaxValue)
+                return;
+            
+            aux = personal ? time : _lastS2Time;
+            
+            ChangeSectorTextColor(sector2Text, aux, lapManager.GetPersonalFastestSector2(),
                 lapManager.GetOverallFastestSector2());
         }
     }
