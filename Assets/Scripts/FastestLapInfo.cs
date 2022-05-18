@@ -96,6 +96,8 @@ public class FastestLapInfo : TelemetryListener, ILapListener
 			lapManager.GetOverallFastestSector1());
 		ChangeTextColor(sector2Text, _s2Time, lapManager.GetPersonalFastestSector2(),
 			lapManager.GetOverallFastestSector2());
+		
+		print(_s3Time + ",   " + lapManager.GetPersonalFastestSector3());
 		ChangeTextColor(sector3Text, _s3Time, lapManager.GetPersonalFastestSector3(),
 			lapManager.GetOverallFastestSector3());
 		
@@ -115,13 +117,13 @@ public class FastestLapInfo : TelemetryListener, ILapListener
 			text.color = Manager.instance.colorPalette.NormalTime;
 	}
 
-	private void DownGradeColor(TextMeshProUGUI text, int time, int personalBest, int overallBest)
+	private void DownGradeColor(TextMeshProUGUI text, int lastTime, int newTime, int personalBest, int overallBest)
 	{
-		if (time <= overallBest)
+		if (newTime <= lastTime)
 		{
-			if(time <= personalBest && time == personalBest)
+			if (newTime == personalBest)
 				text.color = Manager.instance.colorPalette.NormalTime;
-			else
+			else if(newTime <= overallBest)
 				text.color = Manager.instance.colorPalette.PersonalBestTime;
 		}
 	}
@@ -144,31 +146,34 @@ public class FastestLapInfo : TelemetryListener, ILapListener
 
 	public void OnFastestLap(int time, bool personal)
 	{
-		if (_lapTime == Int32.MaxValue || personal)
+		if (_lapTime == Int32.MaxValue || personal || time == _lapTime)
 			return;
 		
-		DownGradeColor(fastestLapText, time, lapManager.GetPersonalFastestLap(),
+		DownGradeColor(fastestLapText, _lapTime,time, lapManager.GetPersonalFastestLap(),
 			lapManager.GetOverallFastestLap());
 	}
 
 	public void OnFastestSector(int time, int sector, bool personal)
 	{
-		if (_lapTime == Int32.MaxValue || personal)
+		if (_lapTime == Int32.MaxValue)
 			return;
 
 		if (sector == 0)
 		{
-			DownGradeColor(sector1Text, time, _s1Time, 
+			DownGradeColor(sector1Text, _s1Time,time, lapManager.GetPersonalFastestSector1(),
 				lapManager.GetOverallFastestSector1());
 		}
 		else if (sector == 1)
 		{
-			DownGradeColor(sector2Text, time, _s2Time,
+			DownGradeColor(sector2Text, _s2Time, time, lapManager.GetPersonalFastestSector2(),
 				lapManager.GetOverallFastestSector2());
 		}
 		else if (sector == 2)
 		{
-			DownGradeColor(sector3Text, time, _s3Time,
+			if (time == _s3Time)
+				return;
+		
+			DownGradeColor(sector3Text, _s3Time, time, lapManager.GetPersonalFastestSector3(),
 				lapManager.GetOverallFastestSector3());
 		}
 	}

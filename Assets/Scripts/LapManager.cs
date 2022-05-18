@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using Sirenix.OdinInspector.Editor.StateUpdaters;
 using UnityEngine;
 
 public class LapManager : TelemetryListener
@@ -129,7 +130,10 @@ public class LapManager : TelemetryListener
         
         
         IndividualLap individualLap = Instantiate(IndividualLapPrefab, IndividualLapParent).GetComponent<IndividualLap>();
+        individualLap.SetLapManager(this);
         individualLap.SetTime(time, s1Time, s2Time, s3Time, lapNum);
+        _lapListeners.Add(individualLap);
+        
     }
 
     public void AddLapListener(ILapListener lapListener)

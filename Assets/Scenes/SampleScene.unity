@@ -5967,7 +5967,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 61.52417, y: -5.799988}
-  m_SizeDelta: {x: 66.1344, y: 8.176701}
+  m_SizeDelta: {x: 102.5742, y: 8.1767}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &964430508
 MonoBehaviour:
@@ -5989,7 +5989,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Fastest lap
+  m_text: Fastest personal lap
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -8200,7 +8200,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Sector 2: 00,00.000'
+  m_text: 'Sector 1: 00,00.000'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -11400,7 +11400,7 @@ GameObject:
   - component: {fileID: 1721428794}
   - component: {fileID: 1721428796}
   m_Layer: 5
-  m_Name: FastesLap
+  m_Name: FastesPersonalLap
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
