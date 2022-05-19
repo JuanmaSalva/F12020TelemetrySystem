@@ -21,7 +21,12 @@ public class DynamicGearGraph : DynamicPlotGraph
             lines.Add(new Vector2(0, (float)F1TS_gear(playerCarId)));
 
         Vector2 aux = new Vector2(currentLapDistance, (float)F1TS_gear(playerCarId));
-        lines.Add(aux);
-        CalculateAndDrawLine(lines[lines.Count - 2], lines[lines.Count - 1]);
+        
+        //To eliminate reverse (reverse es -1 and will make a infinite vertical line on the graph, that's a no no)
+        if (aux.y >= 0)
+        {
+            lines.Add(aux);
+            CalculateAndDrawLine(lines[lines.Count - 2], lines[lines.Count - 1]);
+        }
     }
 }
