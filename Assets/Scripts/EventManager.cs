@@ -26,6 +26,8 @@ public class EventManager : MonoBehaviour
     private static extern sbyte F1TS_trackId();
     [DllImport("F12020Telemetry")]
     private static extern ushort F1TS_sector2(byte carId);
+    [DllImport("F12020Telemetry")]
+    private static extern byte F1TS_numActiveCars();
 
 
     private byte _currentPlayerCarIndex = 0;
@@ -33,6 +35,7 @@ public class EventManager : MonoBehaviour
     private sbyte _currentTrackId = -1; //invalid number
     private short _currentTrackLength = 0;
     private float _bestLapTime = float.MaxValue;
+    private byte _numActiveCars = 0;
 
     private bool _onLapStarted = false;
 
@@ -79,15 +82,23 @@ public class EventManager : MonoBehaviour
             if (CheckFastestLap())
             {
                 foreach (TelemetryListener tl in _listeners)
-                    tl.OnFastestLap(F1TS_bestLapTime(_currentPlayerCarIndex));
+                    tl.OnFastestPersonalLap(F1TS_bestLapTime(_currentPlayerCarIndex));
             }
 
             foreach (TelemetryListener tl in _listeners)
                 tl.OnNewLap(_currentLap);
         }
 
-
-
+        if (F1TS_numActiveCars() != _numActiveCars)
+        {
+            _numActiveCars = F1TS_numActiveCars();
+            if (_numActiveCars <= 22)
+            {
+                print("New car active: " + _numActiveCars);
+                foreach (TelemetryListener tl in _listeners)
+                    tl.OnNumActiveCarsChange(_numActiveCars);
+            }
+        }
 
     }
 
@@ -106,8 +117,7 @@ public class EventManager : MonoBehaviour
     {
         if(!_onLapStarted && F1TS_sector(_currentPlayerCarIndex) == 0)
         {
-            print("New lap");
-            print(F1TS_lastTimeLap(_currentPlayerCarIndex));
+            print("New lap: " + F1TS_lastTimeLap(_currentPlayerCarIndex));
             _currentLap = F1TS_currentLapNum(_currentPlayerCarIndex);
             _onLapStarted = true;
             return true;
@@ -128,7 +138,8 @@ public class EventManager : MonoBehaviour
 
     bool CheckFastestLap()
     {
-        if(F1TS_lastTimeLap(_currentPlayerCarIndex) < _bestLapTime && F1TS_lastTimeLap(_currentPlayerCarIndex) >= 30) //30 = min seconds for a timed lap
+        if(F1TS_lastTimeLap(_currentPlayerCarIndex) <= F1TS_bestLapTime(_currentPlayerCarIndex) &&
+           F1TS_lastTimeLap(_currentPlayerCarIndex) >= 30) //30 = min seconds for a timed lap
         {
             _bestLapTime = F1TS_lastTimeLap(_currentPlayerCarIndex);
             return true;

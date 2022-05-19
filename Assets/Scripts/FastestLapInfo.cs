@@ -2,7 +2,7 @@ using System;
 using System.Runtime.InteropServices;
 using TMPro;
 
-public class FastestLapInfo : TelemetryListener
+public class FastestLapInfo : TelemetryListener, ILapListener
 {
 	[DllImport("F12020Telemetry")]
 	private static extern float F1TS_bestLapTime(byte id);
@@ -30,20 +30,21 @@ public class FastestLapInfo : TelemetryListener
 	public TextMeshProUGUI sector1Text;
 	public TextMeshProUGUI sector2Text;
 	public TextMeshProUGUI sector3Text;
-
-	public CurrentLapInfo currentLapInfo;
-
+	
+	private int _lapTime = Int32.MaxValue;
 	private int _s1Time;
 	private int _s2Time;
 	private int _s3Time;
 
 	private byte _currentPlayerCarId = 0;
 
+	public LapManager lapManager;
 
 	void Start()
 	{
 		Manager.instance.AddGameObjectDependantFromF1TS(this.gameObject);
 		EventManager.instance.AddListener(this);
+		lapManager.AddLapListener(this);
 
 		fastestLapText.color = Manager.instance.colorPalette.NormalTime;
 		sector1Text.color = Manager.instance.colorPalette.NormalTime;
@@ -60,84 +61,120 @@ public class FastestLapInfo : TelemetryListener
 		sector2Text.text = "Sector 2: 00,00.000";
 		sector3Text.text = "Sector 3: 00,00.000";
 	}
+	
 
-	private void Update()
+	
+	public override void OnFastestPersonalLap(float time) //fastest personal lap
 	{
-		ushort s1Time = F1TS_bestLapSector1TimeInMS(_currentPlayerCarId);
-		if (s1Time != 0)
-		{
-			if (s1Time <= F1TS_bestOverallSector1TimeInMS(_currentPlayerCarId))
-				sector1Text.color = Manager.instance.colorPalette.OverallBestTime;
-			else if (s1Time <= currentLapInfo.SessionBestS1())
-				sector1Text.color = Manager.instance.colorPalette.PersonalBestTime;
-			else
-				sector1Text.color = Manager.instance.colorPalette.NormalTime;
-		}
-
-
-		ushort s2Time = F1TS_bestLapSector2TimeInMS(_currentPlayerCarId);
-		if(s2Time != 0){
-			if (s2Time <= F1TS_bestOverallSector2TimeInMS(_currentPlayerCarId))
-				sector2Text.color = Manager.instance.colorPalette.OverallBestTime;
-			else if (s2Time <= currentLapInfo.SessionBestS2())
-				sector2Text.color = Manager.instance.colorPalette.PersonalBestTime;
-			else
-				sector2Text.color = Manager.instance.colorPalette.NormalTime;
-		}
-
-		int s3Time = F1TS_bestLapSector3TimeInMS(_currentPlayerCarId);
-		if(s3Time != 0)
-		{
-			if (s3Time <= F1TS_bestOverallSector3TimeInMS(_currentPlayerCarId))
-				sector3Text.color = Manager.instance.colorPalette.OverallBestTime;
-			else if (s3Time <= currentLapInfo.SessionBestS3())
-				sector3Text.color = Manager.instance.colorPalette.PersonalBestTime;
-			else
-				sector3Text.color = Manager.instance.colorPalette.NormalTime;
-		}
-	}
-
-	public override void OnFastestLap(float time)
-	{
-		int s, ms;
-
+		print("FASTEST LAP ");
+		if (time <= 0)
+			return;
+		
 		//Lap time
 		int currentLapMili = (int)(time * 1000);
-		if (currentLapMili != 0.0)
+		if (currentLapMili <= 0)
+			return;
+		_lapTime = currentLapMili;
+
+		fastestLapText.text = "Lap: " + FromTimeToStringFormat(_lapTime);
+
+		_s1Time = F1TS_bestLapSector1TimeInMS(_currentPlayerCarId);
+		sector1Text.text = "Sector 1: " + FromTimeToStringFormat(_s1Time);
+		
+
+		_s2Time = F1TS_bestLapSector2TimeInMS(_currentPlayerCarId);
+		sector2Text.text = "Sector 2: " + FromTimeToStringFormat(_s2Time);
+
+
+		_s3Time = F1TS_bestLapSector3TimeInMS(_currentPlayerCarId);
+		sector3Text.text = "Sector 3: " + FromTimeToStringFormat(_s3Time);
+		
+		//Change text colors
+		ChangeTextColor(fastestLapText, _lapTime, lapManager.GetPersonalFastestLap(),
+			lapManager.GetOverallFastestLap());
+		ChangeTextColor(sector1Text, _s1Time, lapManager.GetPersonalFastestSector1(),
+			lapManager.GetOverallFastestSector1());
+		ChangeTextColor(sector2Text, _s2Time, lapManager.GetPersonalFastestSector2(),
+			lapManager.GetOverallFastestSector2());
+		
+		//print(_s3Time + ",   " + lapManager.GetPersonalFastestSector3());
+		ChangeTextColor(sector3Text, _s3Time, lapManager.GetPersonalFastestSector3(),
+			lapManager.GetOverallFastestSector3());
+		
+	}
+	
+	
+	private void ChangeTextColor(TextMeshProUGUI text, int time, int personalBest, int overallBest)
+	{
+		if (time <= personalBest)
 		{
-			int m = currentLapMili / 60000;
-			int secMill = (currentLapMili - m * 60000);
-			s = secMill / 1000;
-			ms = secMill % 1000;
-			fastestLapText.text = "Lap: " + m.ToString("00") + "," + s.ToString("00") + "." + ms.ToString("000");
-
-			if (time <= F1TS_bestLapTime(_currentPlayerCarId))
-				fastestLapText.color = Manager.instance.colorPalette.OverallBestTime;
-			else
-				fastestLapText.color = Manager.instance.colorPalette.PersonalBestTime;
+			if(time <= overallBest && time == personalBest)
+				text.color = Manager.instance.colorPalette.OverallBestTime;
+			else 
+				text.color = Manager.instance.colorPalette.PersonalBestTime;
 		}
+		else
+			text.color = Manager.instance.colorPalette.NormalTime;
+	}
 
-
-		ushort s1Time = F1TS_bestLapSector1TimeInMS(_currentPlayerCarId);
-		s = s1Time / 1000;
-		ms = s1Time % 1000;
-		sector1Text.text = "Sector 1: 00," + s.ToString("00") + "." + ms.ToString("000");
-
-
-		ushort s2Time = F1TS_bestLapSector2TimeInMS(_currentPlayerCarId);
-		s = s2Time / 1000;
-		ms = s2Time % 1000;
-		sector2Text.text = "Sector 2: 00," + s.ToString("00") + "." + ms.ToString("000");
-
-
-		int s3Time = F1TS_bestLapSector3TimeInMS(_currentPlayerCarId);
-		s = s3Time / 1000;
-		ms = s3Time % 1000;
-		sector3Text.text = "Sector 3: 00," + s.ToString("00") + "." + ms.ToString("000");
+	private void DownGradeColor(TextMeshProUGUI text, int lastTime, int newTime, int personalBest, int overallBest)
+	{
+		if (newTime <= lastTime)
+		{
+			if (newTime == personalBest)
+				text.color = Manager.instance.colorPalette.NormalTime;
+			else if(newTime <= overallBest)
+				text.color = Manager.instance.colorPalette.PersonalBestTime;
+		}
+	}
+	
+	
+	private String FromTimeToStringFormat(int time)
+	{            
+		int m = time / 60000;
+		int secMill = (time - m * 60000);
+		int s = secMill / 1000;
+		int ms = secMill % 1000;
+		return m.ToString("00") + "," + s.ToString("00") + "." + ms.ToString("000");
 	}
 
 	public override void OnPlayerCarIdChanged(byte playerCarId)
 	{
 		_currentPlayerCarId = playerCarId;
+	}
+
+
+	public void OnFastestLap(int time, bool personal)
+	{
+		if (_lapTime == Int32.MaxValue || personal || time == _lapTime)
+			return;
+		
+		DownGradeColor(fastestLapText, _lapTime,time, lapManager.GetPersonalFastestLap(),
+			lapManager.GetOverallFastestLap());
+	}
+
+	public void OnFastestSector(int time, int sector, bool personal)
+	{
+		if (_lapTime == Int32.MaxValue)
+			return;
+
+		if (sector == 0)
+		{
+			DownGradeColor(sector1Text, _s1Time,time, lapManager.GetPersonalFastestSector1(),
+				lapManager.GetOverallFastestSector1());
+		}
+		else if (sector == 1)
+		{
+			DownGradeColor(sector2Text, _s2Time, time, lapManager.GetPersonalFastestSector2(),
+				lapManager.GetOverallFastestSector2());
+		}
+		else if (sector == 2)
+		{
+			if (time == _s3Time)
+				return;
+		
+			DownGradeColor(sector3Text, _s3Time, time, lapManager.GetPersonalFastestSector3(),
+				lapManager.GetOverallFastestSector3());
+		}
 	}
 }

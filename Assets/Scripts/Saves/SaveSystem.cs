@@ -8,10 +8,10 @@ using System.Runtime.Serialization.Formatters.Binary;
 public static class SaveSystem
 {
     /// <summary>
-    /// Guarda informaci髇 en un archivo espec韋ico
+    /// Guarda informaci贸n en un archivo espec铆fico
     /// </summary>
     /// <param name="nombreArchivo">Nombre que queremos para el archivo</param>
-    /// <param name="info">Informaci髇 a guardar</param>
+    /// <param name="info">Informaci贸n a guardar</param>
     public static void SaveObject(string nombreArchivo, object info)
     {
         BinaryFormatter formatter = new BinaryFormatter();
@@ -27,8 +27,8 @@ public static class SaveSystem
     /// <summary>
     /// Carga un objeto previamente guardado
     /// </summary>
-    /// <param name="archivo">Nombre del archivo en el que se encuentra la informaci髇</param>
-    /// <returns>Un objeto con la informaci髇 cargada</returns>
+    /// <param name="archivo">Nombre del archivo en el que se encuentra la informaci贸n</param>
+    /// <returns>Un objeto con la informaci贸n cargada</returns>
     public static object LoadObject(string archivo)
     {
         string path = Application.dataPath + "/ArchivosGuardados/" + archivo; //donde se guarda
