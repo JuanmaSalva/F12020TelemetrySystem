@@ -64,7 +64,7 @@ public class FastestLapInfo : TelemetryListener, ILapListener
 	
 
 	
-	public override void OnFastestLap(float time) //fastest personal lap
+	public override void OnFastestPersonalLap(float time) //fastest personal lap
 	{
 		print("FASTEST LAP ");
 		if (time <= 0)
@@ -97,7 +97,7 @@ public class FastestLapInfo : TelemetryListener, ILapListener
 		ChangeTextColor(sector2Text, _s2Time, lapManager.GetPersonalFastestSector2(),
 			lapManager.GetOverallFastestSector2());
 		
-		print(_s3Time + ",   " + lapManager.GetPersonalFastestSector3());
+		//print(_s3Time + ",   " + lapManager.GetPersonalFastestSector3());
 		ChangeTextColor(sector3Text, _s3Time, lapManager.GetPersonalFastestSector3(),
 			lapManager.GetOverallFastestSector3());
 		

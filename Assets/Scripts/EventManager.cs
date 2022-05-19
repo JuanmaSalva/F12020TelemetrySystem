@@ -82,7 +82,7 @@ public class EventManager : MonoBehaviour
             if (CheckFastestLap())
             {
                 foreach (TelemetryListener tl in _listeners)
-                    tl.OnFastestLap(F1TS_bestLapTime(_currentPlayerCarIndex));
+                    tl.OnFastestPersonalLap(F1TS_bestLapTime(_currentPlayerCarIndex));
             }
 
             foreach (TelemetryListener tl in _listeners)

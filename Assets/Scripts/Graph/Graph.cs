@@ -200,7 +200,7 @@ namespace F1TS
                 dg.NewLapStarted();
         }
 
-        public override void OnFastestLap(float time)
+        public override void OnFastestPersonalLap(float time)
         {
             //Debug.Log("NEW FASTEST LAP, dale carla");
 

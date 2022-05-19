@@ -79,11 +79,11 @@ public class IndividualLap : MonoBehaviour, ILapListener
     
     private void DownGradeColor(TextMeshProUGUI text, int lastTime, int newTime, int personalBest, int overallBest)
     {
-        if (newTime <= lastTime)
+        if (newTime <= lastTime - 2) //2 of margin for approximation errors
         {
             if (newTime == personalBest)
                 text.color = Manager.instance.colorPalette.NormalTime;
-            else if(newTime <= overallBest)
+            else// if(newTime <= overallBest)
                 text.color = Manager.instance.colorPalette.PersonalBestTime;
         }
     }
@@ -112,8 +112,8 @@ public class IndividualLap : MonoBehaviour, ILapListener
         }
         else if (sector == 2)
         {
-            if (time == _s3Time)
-                return;
+            // if (time == _s3Time)
+            //     return;
             
             DownGradeColor(sector3Text, _s3Time, time, _lapManager.GetPersonalFastestSector3(),
                 _lapManager.GetOverallFastestSector3());
