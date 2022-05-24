@@ -10,6 +10,12 @@ public class Standings : TelemetryListener
 {
 	[DllImport("F12020Telemetry")]
 	private static extern ushort F1TS_carPosition(byte carId);
+	[DllImport("F12020Telemetry")]
+	private static extern ushort F1TS_visualTyreCompound(byte carId);
+	[DllImport("F12020Telemetry")]
+	private static extern string F1TS_nameStr(byte carId);
+	[DllImport("F12020Telemetry")]
+	private static extern char[] F1TS_name(byte carId);
 
 
 	public TextMeshProUGUI position;
@@ -57,10 +63,12 @@ public class Standings : TelemetryListener
 		for(int i = 0; i < drivers.Count; i++)
 		{
 			drivers[i].Value.transform.SetSiblingIndex(i);
+			drivers[i].Value.ChangeCompoundIcon(F1TS_visualTyreCompound(drivers[i].Key));
 		}
 
 	}
 
+	
 
 	public override void OnPlayerCarIdChanged(byte playerCarId)
 	{
@@ -82,6 +90,11 @@ public class Standings : TelemetryListener
 			aux.currentPosition = F1TS_carPosition(i);
 			
 			drivers.Add(new KeyValuePair<byte, DriverStanding>(i, aux));
+			
+			//TODO set names, y esto dudo yo que funcione
+			char[] nameAux = new char [48];
+			nameAux = F1TS_name(i);
+			print(nameAux[0]);
 		}
 	}
 }

@@ -402,6 +402,13 @@ MonoBehaviour:
   position: {fileID: 6406914066152065944}
   driverName: {fileID: 498225389089009386}
   delta: {fileID: 2734303335628155060}
+  compoundSprite: {fileID: 9025262038690222317}
+  currentPosition: 0
+  soft: {fileID: 21300000, guid: 5911309fc320dd04e8a7e9f0f83f5af5, type: 3}
+  medium: {fileID: 21300000, guid: c53df043f9914cc4e9ee03af4d614da2, type: 3}
+  hard: {fileID: 21300000, guid: 6892afa6b4befd842996be468c06ea8d, type: 3}
+  inter: {fileID: 21300000, guid: 86b9fac6cb7bbce40960a70fc8a77f43, type: 3}
+  wets: {fileID: 21300000, guid: d5dfc7d5e7f531e49877b5143a73bd52, type: 3}
 --- !u!1 &7191538965526720070
 GameObject:
   m_ObjectHideFlags: 0
