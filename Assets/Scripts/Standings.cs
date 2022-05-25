@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Text;
 using UnityEngine;
 using TMPro;
 
@@ -13,9 +14,7 @@ public class Standings : TelemetryListener
 	[DllImport("F12020Telemetry")]
 	private static extern ushort F1TS_visualTyreCompound(byte carId);
 	[DllImport("F12020Telemetry")]
-	private static extern string F1TS_nameStr(byte carId);
-	[DllImport("F12020Telemetry")]
-	private static extern char[] F1TS_name(byte carId);
+	private static extern void F1TS_name(byte carId, byte[] n);
 
 
 	public TextMeshProUGUI position;
@@ -39,6 +38,10 @@ public class Standings : TelemetryListener
 		EventManager.instance.AddListener(this);
 
 		position.color = Manager.instance.colorPalette.PanelTitle;
+		
+		// byte[] s = new byte[48];
+		// F1TS_name(0, s);
+		// print(System.Text.Encoding.ASCII.GetString(s));
 	}
 
 	void Update()
@@ -83,7 +86,8 @@ public class Standings : TelemetryListener
 		drivers.Clear();
 		
 		_numActiveCars = numActiveCars;
-
+		
+		
 		for (byte i = 0; i < _numActiveCars; i++)
 		{
 			DriverStanding aux = Instantiate(driverStandingPrefab, standingParent).GetComponent<DriverStanding>();
@@ -91,10 +95,9 @@ public class Standings : TelemetryListener
 			
 			drivers.Add(new KeyValuePair<byte, DriverStanding>(i, aux));
 			
-			//TODO set names, y esto dudo yo que funcione
-			char[] nameAux = new char [48];
-			nameAux = F1TS_name(i);
-			print(nameAux[0]);
+			byte[] s = new byte[48];
+			F1TS_name(i, s);
+			aux.driverName.text = Encoding.Default.GetString(s);
 		}
 	}
 }
