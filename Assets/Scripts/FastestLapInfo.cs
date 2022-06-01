@@ -26,6 +26,7 @@ public class FastestLapInfo : TelemetryListener, ILapListener
 	private static extern ushort F1TS_bestOverallSector3TimeInMS(byte carId);
 
 
+	public TextMeshProUGUI title;
 	public TextMeshProUGUI fastestLapText;
 	public TextMeshProUGUI sector1Text;
 	public TextMeshProUGUI sector2Text;
@@ -52,6 +53,7 @@ public class FastestLapInfo : TelemetryListener, ILapListener
 		sector3Text.color = Manager.instance.colorPalette.NormalTime;
 
 		ResetTimes();
+		title.color = Manager.instance.colorPalette.PanelTitle;
 	}
 
 	private void ResetTimes()

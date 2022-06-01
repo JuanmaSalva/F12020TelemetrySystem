@@ -25,6 +25,7 @@ public class CurrentLapInfo : TelemetryListener, ILapListener
     private static extern ushort F1TS_bestOverallSector3TimeInMS(byte carId);
 
     //---------VARIABLES---------
+    public TextMeshProUGUI title;
     public TextMeshProUGUI currentLapText;
     public TextMeshProUGUI sector1Text;
     public TextMeshProUGUI sector2Text;
@@ -47,6 +48,7 @@ public class CurrentLapInfo : TelemetryListener, ILapListener
         lapManager.AddLapListener(this);
 
         ResetTimes();
+        title.color = Manager.instance.colorPalette.PanelTitle;
     }
     
     
