@@ -108,9 +108,9 @@ public class Dash : TelemetryListener
         {
             if (i < lightToLight)
             {
-                if (i < 5)
+                if (i <= 5)
                     revMeter[i].color = low;
-                else if (i < 10)
+                else if (i <= 10)
                     revMeter[i].color = mid;
                 else
                     revMeter[i].color = high;

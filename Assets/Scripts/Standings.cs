@@ -9,8 +9,11 @@ using TMPro;
 
 public class Standings : TelemetryListener
 {
+	
 	[DllImport("F12020Telemetry")]
 	private static extern ushort F1TS_carPosition(byte carId);
+	[DllImport("F12020Telemetry")]
+	private static extern ushort F1TS_tyresAgeLaps(byte carId);
 	[DllImport("F12020Telemetry")]
 	private static extern ushort F1TS_visualTyreCompound(byte carId);
 	[DllImport("F12020Telemetry")]
@@ -20,7 +23,7 @@ public class Standings : TelemetryListener
 	public TextMeshProUGUI position;
 	public GameObject driverStandingPrefab;
 	public Transform standingParent;
-
+	public List<TextMeshProUGUI> textsToChangeColor;
 
 	private byte _currentPlayerCarId = 0;
 	private byte _numActiveCars = 0;
@@ -38,10 +41,11 @@ public class Standings : TelemetryListener
 		EventManager.instance.AddListener(this);
 
 		position.color = Manager.instance.colorPalette.PanelTitle;
+		foreach (TextMeshProUGUI text in textsToChangeColor)
+		{
+			text.color = Manager.instance.colorPalette.PanelInfo;
+		}
 		
-		// byte[] s = new byte[48];
-		// F1TS_name(0, s);
-		// print(System.Text.Encoding.ASCII.GetString(s));
 	}
 
 	void Update()
@@ -59,6 +63,8 @@ public class Standings : TelemetryListener
 			ushort pos = F1TS_carPosition(driver.Key);
 			driver.Value.currentPosition = pos;
 			driver.Value.position.text = pos.ToString();
+			
+			driver.Value.compoundAge.text = F1TS_tyresAgeLaps(driver.Key).ToString();
 		}
 		
 		drivers = drivers.OrderBy(x => x.Value.currentPosition).ToList();
