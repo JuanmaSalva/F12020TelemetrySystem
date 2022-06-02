@@ -26,4 +26,6 @@ public class ColorPalette : ScriptableObject
     [TabGroup("Sectors")] public Color NormalTime;
     [TabGroup("Sectors")] public Color PersonalBestTime;
     [TabGroup("Sectors")] public Color OverallBestTime;
+
+    [TabGroup("Teams")] public List<Color> TeamColors;
 }

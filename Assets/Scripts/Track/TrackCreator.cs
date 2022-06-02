@@ -7,20 +7,16 @@ public class TrackCreator : MonoBehaviour
 {
 	public List<CreateLine> lines;
 	public int pointsDivision = 10;
+	
+	
 
-	[Range(0.0f, 1.0f)] public float pos;
-
-	private Vector2 currentPos;
 	private Vector3[] points;
 	private float[] distances;
 	private float totalDist = 0;
 
 
-	private bool start = false;
-
-	private void Start()
+	private void Awake()
 	{
-		start = true;
 		points = new Vector3[lines.Count * (pointsDivision - 1) + 1];
 		distances = new float[lines.Count * (pointsDivision - 1) + 1];
 
@@ -46,29 +42,25 @@ public class TrackCreator : MonoBehaviour
 		}
 	}
 
-	private void OnDrawGizmos()
+	
+	public Vector3 GetDriverIconPos(float range)
 	{
-		if (start)
+		float currentDist = totalDist * range;
+		int currentInd = 0;
+		while (true)
 		{
-			float currentDist = totalDist * pos;
-			int currentInd = 0;
-			while (true)
-			{
-				if (currentInd >= distances.Length ||
-				    (currentDist < distances[1] && distances[currentInd] <= currentDist) ||
-				    (distances[currentInd] <= currentDist && currentDist <= distances[currentInd + 1]))
-					break;
+			if (currentInd >= distances.Length ||
+			    (currentDist < distances[1] && distances[currentInd] <= currentDist) ||
+			    (distances[currentInd] <= currentDist && currentDist <= distances[currentInd + 1]))
+				break;
 
-				currentInd++;
-			}
-
-			float distanceDelta = distances[currentInd + 1] - distances[currentInd];
-			float interpolation = (currentDist - distances[currentInd]) / distanceDelta;
-			Vector3 currentPos = Vector3.Lerp(points[currentInd], points[currentInd + 1], interpolation);
-			
-
-			Gizmos.color = Color.green;
-			Gizmos.DrawSphere(currentPos, 5);
+			currentInd++;
 		}
+
+		float distanceDelta = distances[currentInd + 1] - distances[currentInd];
+		float interpolation = (currentDist - distances[currentInd]) / distanceDelta;
+		Vector3 currentPos = Vector3.Lerp(points[currentInd], points[currentInd + 1], interpolation);
+
+		return currentPos;
 	}
 }

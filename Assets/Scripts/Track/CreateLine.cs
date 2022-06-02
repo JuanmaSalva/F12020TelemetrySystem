@@ -17,19 +17,19 @@ public class CreateLine : MonoBehaviour
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
-        Gizmos.DrawSphere(A.position, 5);
-        Gizmos.DrawSphere(D.position, 5);
+        Gizmos.DrawSphere(A.position, 1);
+        Gizmos.DrawSphere(D.position, 1);
         
         Gizmos.color = Color.blue;
-        Gizmos.DrawSphere(B.position, 5);
-        Gizmos.DrawSphere(C.position, 5);
+        Gizmos.DrawSphere(B.position, 1);
+        Gizmos.DrawSphere(C.position, 1);
         
         Gizmos.color = Color.cyan;
         Gizmos.DrawLine(A.position, B.position);
         Gizmos.DrawLine(C.position, D.position);
         
         Handles.DrawBezier(A.position, D.position, B.position, C.position,
-            Color.white, null, 2);
+            Color.white, null, 0.5f);
 
         points = Handles.MakeBezierPoints(A.position, D.position, B.position, C.position,
             pointsDivision);
@@ -37,7 +37,7 @@ public class CreateLine : MonoBehaviour
         Gizmos.color = Color.yellow;
         foreach (Vector3 point in points)
         {
-            Gizmos.DrawSphere(point, 2);
+            Gizmos.DrawSphere(point, 0.25f);
         }
     }
 
