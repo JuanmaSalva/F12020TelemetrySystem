@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
+
 
 public class TrackMap : TelemetryListener
 {
@@ -11,6 +13,8 @@ public class TrackMap : TelemetryListener
     private static extern float F1TS_lapDistance(byte carId);
     [DllImport("F12020Telemetry")]
     private static extern byte F1TS_teamId(byte carId);
+    [DllImport("F12020Telemetry")]
+    private static extern byte F1TS_raceNumber(byte carId);
     
     
     
@@ -71,9 +75,10 @@ public class TrackMap : TelemetryListener
         }
         _driversIcons.Clear();
 
-        for (int i = 0; i < numActiveCars; i++)
+        for (byte i = 0; i < numActiveCars; i++)
         {
             _driversIcons.Add(Instantiate(_driverIconPrefab, _driversParent).GetComponent<Image>());
+            _driversIcons[i].GetComponentInChildren<TextMeshProUGUI>().text = F1TS_raceNumber(i).ToString();
         }
     }
 }

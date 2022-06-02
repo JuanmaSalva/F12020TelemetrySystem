@@ -54,7 +54,7 @@ public class LapManager : TelemetryListener
         Manager.instance.AddGameObjectDependantFromF1TS(this.gameObject);
     }
 
-    void Update()
+    void LateUpdate()
     {
         //check overall lap and sector times
         for (byte i = 0; i < _numActiveCars; i++)
