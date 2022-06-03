@@ -24,7 +24,7 @@ MonoBehaviour:
   m_MinSize: {x: 300, y: 200}
   m_MaxSize: {x: 24288, y: 16192}
   vertical: 0
-  controlID: 3114
+  controlID: 121
 --- !u!114 &2
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -148,7 +148,7 @@ MonoBehaviour:
   m_MinSize: {x: 200, y: 200}
   m_MaxSize: {x: 16192, y: 16192}
   vertical: 0
-  controlID: 3115
+  controlID: 122
 --- !u!114 &4
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -173,7 +173,7 @@ MonoBehaviour:
   m_MinSize: {x: 100, y: 200}
   m_MaxSize: {x: 8096, y: 16192}
   vertical: 1
-  controlID: 3100
+  controlID: 123
 --- !u!114 &5
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -482,7 +482,7 @@ MonoBehaviour:
       index: 2
       layout: 0
   m_WindowGUID: 5de16092e100ff544b61ef4aa1d834aa
-  m_Gizmos: 0
+  m_Gizmos: 1
   m_OverrideSceneCullingMask: 6917529027641081856
   m_SceneIsLit: 1
   m_SceneLighting: 1
@@ -491,9 +491,9 @@ MonoBehaviour:
   m_PlayAudio: 0
   m_AudioPlay: 0
   m_Position:
-    m_Target: {x: 381.75073, y: 255.68007, z: -8.388366}
+    m_Target: {x: 712.0565, y: 185.88107, z: -7.715474}
     speed: 2
-    m_Value: {x: 381.75073, y: 255.68007, z: -8.388366}
+    m_Value: {x: 712.0565, y: 185.88107, z: -7.715474}
   m_RenderMode: 0
   m_CameraMode:
     drawMode: 0
@@ -543,9 +543,9 @@ MonoBehaviour:
     speed: 2
     m_Value: {x: 0, y: 0, z: 0, w: 1}
   m_Size:
-    m_Target: 470.81528
+    m_Target: 284.52682
     speed: 2
-    m_Value: 470.81528
+    m_Value: 284.52682
   m_Ortho:
     m_Target: 1
     speed: 2
@@ -620,7 +620,7 @@ MonoBehaviour:
   m_MinSize: {x: 100, y: 200}
   m_MaxSize: {x: 8096, y: 16192}
   vertical: 1
-  controlID: 3116
+  controlID: 40
 --- !u!114 &9
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -680,7 +680,7 @@ MonoBehaviour:
       scrollPos: {x: 0, y: 0}
       m_SelectedIDs: 
       m_LastClickedID: 0
-      m_ExpandedIDs: d6f9ffff1afaffff2afbffff7a53000038540000aa55000090570000
+      m_ExpandedIDs: b0f0ffff02f9ffff06f9ffff12f9ffff14f9ffff2afbfffff6590000
       m_RenameOverlay:
         m_UserAcceptedRename: 0
         m_Name: 
@@ -772,22 +772,22 @@ MonoBehaviour:
     m_SkipHidden: 0
     m_SearchArea: 1
     m_Folders:
-    - Assets/Prefabs/Traks
+    - Assets/Scenes
     m_Globs: []
     m_OriginalText: 
   m_ViewMode: 1
   m_StartGridSize: 64
   m_LastFolders:
-  - Assets/Prefabs/Traks
+  - Assets/Scenes
   m_LastFoldersGridSize: -1
   m_LastProjectPath: C:\Uni\Proyectos\TelemetriaF1\F12020TelemetrySystem
   m_LockTracker:
     m_IsLocked: 0
   m_FolderTreeState:
     scrollPos: {x: 0, y: 0}
-    m_SelectedIDs: 7e520000
-    m_LastClickedID: 21118
-    m_ExpandedIDs: 00000000685200006a5200006c5200007c52000000ca9a3b
+    m_SelectedIDs: bc590000
+    m_LastClickedID: 22972
+    m_ExpandedIDs: 000000009c5900009e590000a0590000ac59000000ca9a3b
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -815,7 +815,7 @@ MonoBehaviour:
     scrollPos: {x: 0, y: 0}
     m_SelectedIDs: 
     m_LastClickedID: 0
-    m_ExpandedIDs: 00000000685200006a5200006c52000000ca9a3b
+    m_ExpandedIDs: 000000009c5900009e590000a0590000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -840,8 +840,8 @@ MonoBehaviour:
       m_Icon: {fileID: 0}
       m_ResourceFile: 
   m_ListAreaState:
-    m_SelectedInstanceIDs: 
-    m_LastClickedInstanceID: 0
+    m_SelectedInstanceIDs: e6590000
+    m_LastClickedInstanceID: 23014
     m_HadKeyboardFocusLastEvent: 1
     m_ExpandedInstanceIDs: c62300001a890000000000007a540000
     m_RenameOverlay:
@@ -959,7 +959,7 @@ MonoBehaviour:
     m_CachedPref: -160
     m_ControlHash: -371814159
     m_PrefName: Preview_InspectorPreview
-  m_LastInspectedObjectInstanceID: -1
+  m_LastInspectedObjectInstanceID: 23014
   m_LastVerticalScrollValue: 0
   m_GlobalObjectId: 
   m_InspectorMode: 0
