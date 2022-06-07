@@ -1426,16 +1426,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lines:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 9156120710522417838}
+  - {fileID: 1709738157541527513}
+  - {fileID: 2890032363225700123}
+  - {fileID: 3236452853071640456}
+  - {fileID: 1953076611148792379}
+  - {fileID: 627767208095066262}
+  - {fileID: 6545565226580523782}
+  - {fileID: 8491057058981007973}
+  - {fileID: 4635771343808531236}
+  - {fileID: 5647142873333569020}
   pointsDivision: 10
 --- !u!1 &5699872229254020975
 GameObject:
