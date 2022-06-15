@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using System;
 using UnityEngine;
 using System.Threading;
 using UnityEditor;
@@ -18,6 +19,10 @@ public class Manager : MonoBehaviour
     [DllImport("F12020Telemetry")]
     private static extern bool F1TS_isClosed();
 
+    
+    
+    [DllImport("F12020Telemetry")]
+    private static extern void F1TS_pruebaCallBack(Action f);
 
 
     public Canvas canvas;
@@ -27,10 +32,12 @@ public class Manager : MonoBehaviour
 
     void Awake()
     {
+        F1TS_pruebaCallBack(Test1);
+        
         if (instance == null)
         {
             instance = this;
-            DontDestroyOnLoad(gameObject);
+            //DontDestroyOnLoad(gameObject);
         }
 
         F1TS_startF1TelemetryThread();
@@ -47,7 +54,13 @@ public class Manager : MonoBehaviour
 #endif
         _objectsDependantFromF1Ts = new List<GameObject>();
         Application.targetFrameRate = 30;
+        
     }
+
+    public void Test1()
+    {
+        print("Sesion terminada");
+    } 
 
 
 #if UNITY_EDITOR
