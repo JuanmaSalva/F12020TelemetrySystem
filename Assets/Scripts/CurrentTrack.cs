@@ -10,7 +10,8 @@ public class CurrentTrack : TelemetryListener
 
     public TextMeshProUGUI currentTrackText;
     public F1TS.Graph graph;
-
+    public TrackMap trackMap;
+    
     private void Start()
     {
         EventManager.instance.AddListener(this);
@@ -20,6 +21,7 @@ public class CurrentTrack : TelemetryListener
     public override void OnNewTrack(short length, sbyte trackId)
     {
         currentTrackText.text = GetTrackName(trackId);
+        trackMap.LoadNewTrack(length, trackId);
     }
 
     string GetTrackName(sbyte trackName)

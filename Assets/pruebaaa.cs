@@ -10,14 +10,14 @@ public class pruebaaa : MonoBehaviour
 {
 
     [DllImport("F1TelemetriaDll")]
-    private static extern void pruebaCallback(System.Action f);
+    private static extern void F1TS_sessionEndedCallBack(Action f);
     
 
     
     // Start is called before the first frame update
     void Start()
     {
-        pruebaCallback(prueba);
+        //pruebaCallback(prueba);
     }
 
     void prueba()
