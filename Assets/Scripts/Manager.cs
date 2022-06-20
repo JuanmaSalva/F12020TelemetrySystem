@@ -24,8 +24,6 @@ public class Manager : MonoBehaviour
     
     [DllImport("F12020Telemetry")]
     private static extern void F1TS_sessionEndedCallBack(Action f);
-    [DllImport("F12020Telemetry")]
-    private static extern void F1TS_sessionStartedCallBack(Action f);
 
 
     public Canvas canvas;
@@ -33,8 +31,8 @@ public class Manager : MonoBehaviour
 
     private List<GameObject> _objectsDependantFromF1Ts;
 
-    
-  
+
+    private static bool _returnToMainMenu = false;
     
     
     void Awake()
@@ -61,7 +59,6 @@ public class Manager : MonoBehaviour
         Application.targetFrameRate = 30;
 
         
-        F1TS_sessionStartedCallBack(SessionStartedCallBack);
         F1TS_sessionEndedCallBack(SessionEndedCallBack);
         
     }
@@ -79,13 +76,10 @@ public class Manager : MonoBehaviour
 
     void Update()
     {
-        //todo condicion de parado
-        if (Input.GetKeyDown(KeyCode.Escape))
+        if (_returnToMainMenu || Input.GetKeyDown(KeyCode.Escape))
         {
-#if !UNITY_EDITOR
-        CloseTelemetrySystem();
-        Application.Quit();
-#endif
+            CloseTelemetrySystem();
+            SceneManager.LoadScene("MainMenu");
         }
     }
 
@@ -121,15 +115,9 @@ public class Manager : MonoBehaviour
 
     public static void SessionEndedCallBack()
     {
-        
-        Debug.Log("Bro-");
-        //SceneManager.LoadScene("MainMenu");
+        _returnToMainMenu = true;
     } 
     
-    public static void SessionStartedCallBack()
-    {
-        Debug.Log("Session started");
-    }
     
     
     

@@ -1,8 +1,6 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
-using Sirenix.OdinInspector.Editor.StateUpdaters;
 using UnityEngine;
 
 public class LapManager : TelemetryListener
