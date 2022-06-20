@@ -34,17 +34,7 @@ public class Manager : MonoBehaviour
     private List<GameObject> _objectsDependantFromF1Ts;
 
     
-    public void SessionEndedCallBack()
-    {
-        
-        Debug.Log("Bro-");
-        //SceneManager.LoadScene("MainMenu");
-    } 
-    
-    public void SessionStartedCallBack()
-    {
-        Debug.Log("Session started");
-    }
+  
     
     
     void Awake()
@@ -71,7 +61,7 @@ public class Manager : MonoBehaviour
         Application.targetFrameRate = 30;
 
         
-        //F1TS_sessionStartedCallBack(SessionStartedCallBack);
+        F1TS_sessionStartedCallBack(SessionStartedCallBack);
         F1TS_sessionEndedCallBack(SessionEndedCallBack);
         
     }
@@ -129,7 +119,17 @@ public class Manager : MonoBehaviour
 
 
 
+    public static void SessionEndedCallBack()
+    {
+        
+        Debug.Log("Bro-");
+        //SceneManager.LoadScene("MainMenu");
+    } 
     
+    public static void SessionStartedCallBack()
+    {
+        Debug.Log("Session started");
+    }
     
     
     

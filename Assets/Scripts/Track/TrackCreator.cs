@@ -49,7 +49,7 @@ public class TrackCreator : MonoBehaviour
 		int currentInd = 0;
 		while (true)
 		{
-			if (currentInd >= distances.Length ||
+			if (currentInd >= distances.Length - 2 ||
 			    (currentDist < distances[1] && distances[currentInd] <= currentDist) ||
 			    (distances[currentInd] <= currentDist && currentDist <= distances[currentInd + 1]))
 				break;
