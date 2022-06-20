@@ -9,7 +9,6 @@ public class CurrentTrack : TelemetryListener
 
 
     public TextMeshProUGUI currentTrackText;
-    public F1TS.Graph graph;
     public TrackMap trackMap;
     
     private void Start()

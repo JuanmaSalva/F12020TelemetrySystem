@@ -709,10 +709,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1b08d8319e72bf64ea8d1f2b7cb5be4b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  A: {fileID: 93791501598832666}
-  B: {fileID: 6535847608598852321}
-  C: {fileID: 8480895665424358401}
-  D: {fileID: 1881907573835502433}
+  A: {fileID: 1881907573835502433}
+  B: {fileID: 8480895665424358401}
+  C: {fileID: 6535847608598852321}
+  D: {fileID: 93791501598832666}
   pointsDivision: 10
 --- !u!1 &2809126584043010222
 GameObject:

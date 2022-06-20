@@ -87,7 +87,8 @@ public class Manager : MonoBehaviour
     {
         foreach (GameObject obj in _objectsDependantFromF1Ts)
         {
-            obj.SetActive(false);
+            if(obj != null)
+                obj.SetActive(false);
         }
         
         print("Vamos a cerrar el socket");

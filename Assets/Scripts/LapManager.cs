@@ -127,13 +127,14 @@ public class LapManager : TelemetryListener
         if (lapNum == lastLapRegistered || time == 0 || s1Time == 0 || s2Time == 0 || s3Time == 0)
             return;
         lastLapRegistered = lapNum;
-        
-        
-        IndividualLap individualLap = Instantiate(IndividualLapPrefab, IndividualLapParent).GetComponent<IndividualLap>();
-        individualLap.SetLapManager(this);
-        individualLap.SetTime(time, s1Time, s2Time, s3Time, lapNum, F1TS_currentLapInvalid(_currentPlayerCarId) == 0);
-        _lapListeners.Add(individualLap);
-        
+
+        if (IndividualLapParent != null)
+        {
+                IndividualLap individualLap = Instantiate(IndividualLapPrefab, IndividualLapParent).GetComponent<IndividualLap>();
+                individualLap.SetLapManager(this);
+                individualLap.SetTime(time, s1Time, s2Time, s3Time, lapNum, F1TS_currentLapInvalid(_currentPlayerCarId) == 0);
+                _lapListeners.Add(individualLap);
+        }
     }
 
     public void AddLapListener(ILapListener lapListener)

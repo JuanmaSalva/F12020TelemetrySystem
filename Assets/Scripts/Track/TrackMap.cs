@@ -56,9 +56,12 @@ public class TrackMap : TelemetryListener
         if(_currentTrack != null)
             Destroy(_currentTrack.gameObject);
 
-        _currentTrack = Instantiate(_trackList[trackId], this.transform);
-        _currentTrack.transform.SetSiblingIndex(0);
-        _trackLength = length;
+        if (trackId >= 0 && trackId < 27)
+        {
+            _currentTrack = Instantiate(_trackList[trackId], this.transform);
+            _currentTrack.transform.SetSiblingIndex(0);
+            _trackLength = length;
+        }
     }
     
     public override void OnPlayerCarIdChanged(byte playerCarId)

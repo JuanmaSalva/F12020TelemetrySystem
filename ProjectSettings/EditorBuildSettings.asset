@@ -9,6 +9,9 @@ EditorBuildSettings:
     path: Assets/Scenes/MainMenu.unity
     guid: c7d78d47be05005488a2a736176614c0
   - enabled: 1
+    path: Assets/Scenes/SimpleMode.unity
+    guid: 346c883321b3ef944a673d32bbb4eefe
+  - enabled: 1
     path: Assets/Scenes/AdvancedMode.unity
-    guid: 2cda990e2423bbf4892e6590ba056729
+    guid: 373b59743c707b9488c5e15f7e519421
   m_configObjects: {}
