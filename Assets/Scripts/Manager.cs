@@ -5,6 +5,8 @@ using System;
 using UnityEngine;
 using System.Threading;
 using UnityEditor;
+using UnityEngine.SceneManagement;
+
 
 public class Manager : MonoBehaviour
 {
@@ -20,9 +22,8 @@ public class Manager : MonoBehaviour
     private static extern bool F1TS_isClosed();
 
     
-    
     [DllImport("F12020Telemetry")]
-    private static extern void F1TS_pruebaCallBack(Action f);
+    private static extern void F1TS_sessionEndedCallBack(Action f);
 
 
     public Canvas canvas;
@@ -30,10 +31,12 @@ public class Manager : MonoBehaviour
 
     private List<GameObject> _objectsDependantFromF1Ts;
 
+
+    private static bool _returnToMainMenu = false;
+    
+    
     void Awake()
     {
-        F1TS_pruebaCallBack(Test1);
-        
         if (instance == null)
         {
             instance = this;
@@ -54,13 +57,13 @@ public class Manager : MonoBehaviour
 #endif
         _objectsDependantFromF1Ts = new List<GameObject>();
         Application.targetFrameRate = 30;
+
+        
+        F1TS_sessionEndedCallBack(SessionEndedCallBack);
         
     }
 
-    public void Test1()
-    {
-        print("Sesion terminada");
-    } 
+   
 
 
 #if UNITY_EDITOR
@@ -73,13 +76,10 @@ public class Manager : MonoBehaviour
 
     void Update()
     {
-        //todo condicion de parado
-        if (Input.GetKeyDown(KeyCode.Escape))
+        if (_returnToMainMenu || Input.GetKeyDown(KeyCode.Escape))
         {
-#if !UNITY_EDITOR
-        CloseTelemetrySystem();
-        Application.Quit();
-#endif
+            CloseTelemetrySystem();
+            SceneManager.LoadScene("MainMenu");
         }
     }
 
@@ -87,7 +87,8 @@ public class Manager : MonoBehaviour
     {
         foreach (GameObject obj in _objectsDependantFromF1Ts)
         {
-            obj.SetActive(false);
+            if(obj != null)
+                obj.SetActive(false);
         }
         
         print("Vamos a cerrar el socket");
@@ -110,4 +111,15 @@ public class Manager : MonoBehaviour
     {
         _objectsDependantFromF1Ts.Add(obj);
     }
+
+
+
+    public static void SessionEndedCallBack()
+    {
+        _returnToMainMenu = true;
+    } 
+    
+    
+    
+    
 }
