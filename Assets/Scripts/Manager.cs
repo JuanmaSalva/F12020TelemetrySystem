@@ -5,6 +5,8 @@ using System;
 using UnityEngine;
 using System.Threading;
 using UnityEditor;
+using UnityEngine.SceneManagement;
+
 
 public class Manager : MonoBehaviour
 {
@@ -20,9 +22,10 @@ public class Manager : MonoBehaviour
     private static extern bool F1TS_isClosed();
 
     
-    
     [DllImport("F12020Telemetry")]
-    private static extern void F1TS_pruebaCallBack(Action f);
+    private static extern void F1TS_sessionEndedCallBack(Action f);
+    [DllImport("F12020Telemetry")]
+    private static extern void F1TS_sessionStartedCallBack(Action f);
 
 
     public Canvas canvas;
@@ -30,10 +33,22 @@ public class Manager : MonoBehaviour
 
     private List<GameObject> _objectsDependantFromF1Ts;
 
+    
+    public void SessionEndedCallBack()
+    {
+        
+        Debug.Log("Bro-");
+        //SceneManager.LoadScene("MainMenu");
+    } 
+    
+    public void SessionStartedCallBack()
+    {
+        Debug.Log("Session started");
+    }
+    
+    
     void Awake()
     {
-        F1TS_pruebaCallBack(Test1);
-        
         if (instance == null)
         {
             instance = this;
@@ -54,13 +69,14 @@ public class Manager : MonoBehaviour
 #endif
         _objectsDependantFromF1Ts = new List<GameObject>();
         Application.targetFrameRate = 30;
+
+        
+        //F1TS_sessionStartedCallBack(SessionStartedCallBack);
+        F1TS_sessionEndedCallBack(SessionEndedCallBack);
         
     }
 
-    public void Test1()
-    {
-        print("Sesion terminada");
-    } 
+   
 
 
 #if UNITY_EDITOR
@@ -110,4 +126,11 @@ public class Manager : MonoBehaviour
     {
         _objectsDependantFromF1Ts.Add(obj);
     }
+
+
+
+    
+    
+    
+    
 }

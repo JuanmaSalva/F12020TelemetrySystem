@@ -26,7 +26,7 @@ public class IndividualLap : MonoBehaviour, ILapListener
         sector3Text.color = Manager.instance.colorPalette.NormalTime;
     }
 
-    public void SetTime(int l, int s1, int s2, int s3, int lapNum)
+    public void SetTime(int l, int s1, int s2, int s3, int lapNum, bool isValidLap)
     {
         _lapTime = l;
         _s1Time = s1;
@@ -41,13 +41,13 @@ public class IndividualLap : MonoBehaviour, ILapListener
         
         //Change text colors
         ChangeTextColor(lapText, _lapTime, _lapManager.GetPersonalFastestLap(),
-            _lapManager.GetOverallFastestLap());
+            _lapManager.GetOverallFastestLap(), isValidLap);
         ChangeTextColor(sector1Text, _s1Time, _lapManager.GetPersonalFastestSector1(),
-            _lapManager.GetOverallFastestSector1());
+            _lapManager.GetOverallFastestSector1(), isValidLap);
         ChangeTextColor(sector2Text, _s2Time, _lapManager.GetPersonalFastestSector2(),
-            _lapManager.GetOverallFastestSector2());
+            _lapManager.GetOverallFastestSector2(), isValidLap);
         ChangeTextColor(sector3Text, _s3Time, _lapManager.GetPersonalFastestSector3(),
-            _lapManager.GetOverallFastestSector3());
+            _lapManager.GetOverallFastestSector3(), isValidLap);
     }
 
     public void SetLapManager(LapManager lapManager)
@@ -64,8 +64,15 @@ public class IndividualLap : MonoBehaviour, ILapListener
         return m.ToString("00") + "," + s.ToString("00") + "." + ms.ToString("000");
     }
 
-    private void ChangeTextColor(TextMeshProUGUI text, int time, int personalBest, int overallBest)
+    private void ChangeTextColor(TextMeshProUGUI text, int time, int personalBest, int overallBest, bool isValidLap)
     {
+        if(!isValidLap)
+        {
+            text.color = Manager.instance.colorPalette.NormalTime;
+            return;
+        }
+            
+            
         if (time <= personalBest)
         {
             if(time <= overallBest && time == personalBest)

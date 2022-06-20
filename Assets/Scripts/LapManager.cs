@@ -16,6 +16,8 @@ public class LapManager : TelemetryListener
      private static extern ushort F1TS_bestOverallSector2TimeInMS(byte carId);
      [DllImport("F12020Telemetry")]
      private static extern ushort F1TS_bestOverallSector3TimeInMS(byte carId);
+     [DllImport("F12020Telemetry")]
+     private static extern ushort F1TS_currentLapInvalid(byte carId);
     
     
      //---------VARIABLES---------
@@ -131,7 +133,7 @@ public class LapManager : TelemetryListener
         
         IndividualLap individualLap = Instantiate(IndividualLapPrefab, IndividualLapParent).GetComponent<IndividualLap>();
         individualLap.SetLapManager(this);
-        individualLap.SetTime(time, s1Time, s2Time, s3Time, lapNum);
+        individualLap.SetTime(time, s1Time, s2Time, s3Time, lapNum, F1TS_currentLapInvalid(_currentPlayerCarId) == 0);
         _lapListeners.Add(individualLap);
         
     }
