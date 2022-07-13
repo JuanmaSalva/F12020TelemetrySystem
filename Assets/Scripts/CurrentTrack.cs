@@ -36,7 +36,7 @@ public class CurrentTrack : TelemetryListener
             case (3):
                 return "Sakhir (Bahrein)";
             case (4):
-                return "Cataluya";
+                return "Spain";
             case (5):
                 return "Monaco";
             case (6):
